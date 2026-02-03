@@ -1,0 +1,108 @@
+name: 'QADR Dependency Resolution'
+description: 'Quantum-Annealed Dependency Resolution for optimal package management'
+author: 'QADR Contributors'
+
+branding:
+  icon: 'package'
+  color: 'purple'
+
+inputs:
+  manifest-path:
+    description: 'Path to package.json file'
+    required: false
+    default: 'package.json'
+  
+  lock-path:
+    description: 'Path to lockfile (auto-detected if not specified)'
+    required: false
+    default: ''
+  
+  ecosystem:
+    description: 'Package ecosystem (npm, yarn, pnpm, cargo, pip, go)'
+    required: false
+    default: 'npm'
+  
+  mode:
+    description: 'Operation mode (resolve, analyze, benchmark)'
+    required: false
+    default: 'resolve'
+  
+  fail-on-vulnerabilities:
+    description: 'Fail the action if vulnerabilities are found'
+    required: false
+    default: 'false'
+  
+  vulnerability-threshold:
+    description: 'Minimum severity to fail (critical, high, medium, low)'
+    required: false
+    default: 'high'
+  
+  fail-on-outdated:
+    description: 'Fail the action if outdated packages are found'
+    required: false
+    default: 'false'
+  
+  outdated-threshold:
+    description: 'Maximum number of outdated packages before failing'
+    required: false
+    default: '10'
+  
+  cache:
+    description: 'Enable caching of resolution results'
+    required: false
+    default: 'true'
+  
+  token:
+    description: 'GitHub token for PR comments and API access'
+    required: false
+    default: '${{ github.token }}'
+  
+  working-directory:
+    description: 'Working directory for the action'
+    required: false
+    default: '.'
+  
+  config-path:
+    description: 'Path to QADR config file (qadr.config.ts or .qadrrc)'
+    required: false
+    default: ''
+  
+  verbose:
+    description: 'Enable verbose logging'
+    required: false
+    default: 'false'
+
+outputs:
+  resolution-time:
+    description: 'Time taken for dependency resolution (ms)'
+  
+  total-dependencies:
+    description: 'Total number of resolved dependencies'
+  
+  vulnerabilities:
+    description: 'JSON array of detected vulnerabilities'
+  
+  vulnerability-count:
+    description: 'Total number of vulnerabilities found'
+  
+  outdated-count:
+    description: 'Number of outdated packages'
+  
+  conflicts:
+    description: 'JSON array of dependency conflicts'
+  
+  conflict-count:
+    description: 'Number of dependency conflicts'
+  
+  speedup:
+    description: 'Performance improvement over baseline resolver'
+  
+  cache-hit:
+    description: 'Whether resolution was served from cache'
+  
+  report-url:
+    description: 'URL to the full analysis report'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,0 +1,22 @@
+# Default owners for everything
+* @iamthegreatdestroyer
+
+# Core QUBO and annealing algorithms
+/packages/core/src/qubo/ @iamthegreatdestroyer
+/packages/core/src/annealing/ @iamthegreatdestroyer
+
+# CLI application
+/apps/cli/ @iamthegreatdestroyer
+
+# VS Code extension
+/apps/vscode/ @iamthegreatdestroyer
+
+# Documentation
+/docs/ @iamthegreatdestroyer
+
+# CI/CD and infrastructure
+/.github/ @iamthegreatdestroyer
+
+# Security-sensitive files
+/packages/core/src/registry/ @iamthegreatdestroyer
+SECURITY.md @iamthegreatdestroyer

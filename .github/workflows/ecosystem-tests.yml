@@ -1,0 +1,152 @@
+name: Ecosystem Tests
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    schedule:
+        - cron: "0 6 * * 1" # Weekly on Monday at 6 AM UTC
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    npm-ecosystem:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    - name: "express"
+                      repo: "expressjs/express"
+                    - name: "lodash"
+                      repo: "lodash/lodash"
+                    - name: "react"
+                      repo: "facebook/react"
+        steps:
+            - name: Checkout QADR
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Install QADR
+              run: pnpm install --frozen-lockfile && pnpm build
+
+            - name: Checkout ${{ matrix.project.name }}
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ matrix.project.repo }}
+                  path: test-project
+
+            - name: Run QADR resolution
+              run: |
+                  cd test-project
+                  npx qadr resolve --json > qadr-result.json
+
+            - name: Validate resolution
+              run: |
+                  cd test-project
+                  node -e "const r = require('./qadr-result.json'); if (!r.success) process.exit(1);"
+
+            - name: Compare with npm
+              run: |
+                  cd test-project
+                  npm install --package-lock-only
+                  npx qadr benchmark:compare --npm
+
+    pip-ecosystem:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    - name: "requests"
+                      repo: "psf/requests"
+                    - name: "flask"
+                      repo: "pallets/flask"
+        steps:
+            - name: Checkout QADR
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install QADR
+              run: pnpm install --frozen-lockfile && pnpm build
+
+            - name: Checkout ${{ matrix.project.name }}
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ matrix.project.repo }}
+                  path: test-project
+
+            - name: Run QADR resolution
+              run: |
+                  cd test-project
+                  npx qadr resolve --ecosystem pip --json > qadr-result.json
+
+    cargo-ecosystem:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    - name: "ripgrep"
+                      repo: "BurntSushi/ripgrep"
+                    - name: "tokio"
+                      repo: "tokio-rs/tokio"
+        steps:
+            - name: Checkout QADR
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Setup Rust
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+
+            - name: Install QADR
+              run: pnpm install --frozen-lockfile && pnpm build
+
+            - name: Checkout ${{ matrix.project.name }}
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ matrix.project.repo }}
+                  path: test-project
+
+            - name: Run QADR resolution
+              run: |
+                  cd test-project
+                  npx qadr resolve --ecosystem cargo --json > qadr-result.json

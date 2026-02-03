@@ -1,0 +1,7 @@
+packages:
+  # Applications
+  - "apps/*"
+  # Packages
+  - "packages/*"
+  # Documentation (if using Docusaurus or similar)
+  - "docs"

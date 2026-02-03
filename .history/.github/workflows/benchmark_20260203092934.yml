@@ -1,0 +1,68 @@
+name: Benchmark
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    benchmark:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build
+              run: pnpm build
+
+            - name: Run benchmarks
+              run: pnpm benchmark
+
+            - name: Store benchmark result
+              uses: benchmark-action/github-action-benchmark@v1
+              with:
+                  name: QADR Performance Benchmarks
+                  tool: "customSmallerIsBetter"
+                  output-file-path: benchmarks/results/latest.json
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  auto-push: ${{ github.event_name == 'push' }}
+                  comment-on-alert: true
+                  alert-threshold: "150%"
+                  fail-on-alert: true
+                  alert-comment-cc-users: "@iamthegreatdestroyer"
+
+            - name: Compare with npm resolver
+              run: pnpm benchmark:compare
+              continue-on-error: true
+
+            - name: Upload benchmark artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: benchmark-results
+                  path: benchmarks/results/
+                  retention-days: 30

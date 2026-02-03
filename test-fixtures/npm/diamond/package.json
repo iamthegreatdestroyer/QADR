@@ -1,0 +1,9 @@
+{
+  "name": "diamond-fixture",
+  "version": "1.0.0",
+  "description": "Diamond dependency pattern - tests conflict resolution",
+  "dependencies": {
+    "pkg-a": "^1.0.0",
+    "pkg-b": "^1.0.0"
+  }
+}

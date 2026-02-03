@@ -1,0 +1,166 @@
+/* Custom styles for QADR documentation */
+
+:root {
+  /* QADR purple color palette */
+  --vp-c-brand-1: #7c3aed;
+  --vp-c-brand-2: #6d28d9;
+  --vp-c-brand-3: #8b5cf6;
+  --vp-c-brand-soft: rgba(124, 58, 237, 0.14);
+
+  /* Custom colors */
+  --qadr-purple-50: #f5f3ff;
+  --qadr-purple-100: #ede9fe;
+  --qadr-purple-500: #8b5cf6;
+  --qadr-purple-600: #7c3aed;
+  --qadr-purple-700: #6d28d9;
+}
+
+.dark {
+  --vp-c-brand-1: #8b5cf6;
+  --vp-c-brand-2: #a78bfa;
+  --vp-c-brand-3: #7c3aed;
+}
+
+/* Hero section customization */
+.VPHero .VPImage {
+  max-width: 180px;
+  max-height: 180px;
+}
+
+.VPHero .tagline {
+  font-size: 1.2rem !important;
+  color: var(--vp-c-text-2);
+}
+
+/* Feature cards */
+.VPFeature {
+  border-radius: 12px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Code blocks */
+.vp-code-group {
+  margin-top: 16px;
+}
+
+div[class*='language-'] {
+  border-radius: 8px;
+}
+
+/* Custom tip/warning boxes */
+.custom-block {
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.custom-block.tip {
+  border-left: 4px solid var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+}
+
+.custom-block.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.custom-block.danger {
+  border-left: 4px solid #ef4444;
+}
+
+/* API reference styling */
+.api-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.api-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.api-badge.stable {
+  background-color: #10b981;
+  color: white;
+}
+
+.api-badge.experimental {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.api-badge.deprecated {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* Table of contents */
+.VPDocOutlineItem a {
+  transition: color 0.2s ease;
+}
+
+.VPDocOutlineItem a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+/* Search modal */
+.DocSearch-Button {
+  border-radius: 8px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .VPHero .VPImage {
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .VPHero .tagline {
+    font-size: 1rem !important;
+  }
+}
+
+/* Animation for hero */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.VPHero .VPImage img {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Sidebar customization */
+.VPSidebar .group + .group {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+/* Navigation pills */
+.VPNavBarMenuGroup .text {
+  font-weight: 500;
+}
+
+/* Footer links */
+.VPFooter .message,
+.VPFooter .copyright {
+  text-align: center;
+}

@@ -1,0 +1,246 @@
+# QADR GitHub Action
+
+GitHub Action for Quantum-Annealed Dependency Resolution in CI/CD pipelines.
+
+## Features
+
+- 🔮 **Quantum-Annealed Resolution** - Optimal dependency resolution using QADR
+- 🛡️ **Vulnerability Scanning** - Detect security issues in dependencies
+- 📦 **Outdated Detection** - Find packages that need updates
+- 📈 **Performance Benchmarks** - Compare QADR vs npm performance
+- 💬 **PR Comments** - Automatic reporting on pull requests
+- 🗄️ **Caching** - Speed up subsequent runs with intelligent caching
+
+## Quick Start
+
+```yaml
+name: Dependency Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  qadr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR Dependency Resolution
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: resolve
+          fail-on-vulnerabilities: true
+```
+
+## Usage Examples
+
+### Basic Resolution
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    mode: resolve
+```
+
+### Vulnerability Check with Threshold
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    mode: analyze
+    fail-on-vulnerabilities: true
+    vulnerability-threshold: high # critical, high, medium, low
+```
+
+### Performance Benchmark
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    mode: benchmark
+```
+
+### Full Configuration
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    manifest-path: package.json
+    ecosystem: npm
+    mode: resolve
+    fail-on-vulnerabilities: true
+    vulnerability-threshold: high
+    fail-on-outdated: false
+    outdated-threshold: 10
+    cache: true
+    verbose: false
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## Inputs
+
+| Input                     | Description                                         | Default               |
+| ------------------------- | --------------------------------------------------- | --------------------- |
+| `manifest-path`           | Path to package.json                                | `package.json`        |
+| `lock-path`               | Path to lockfile                                    | Auto-detected         |
+| `ecosystem`               | Package ecosystem (npm, yarn, pnpm, cargo, pip, go) | `npm`                 |
+| `mode`                    | Operation mode (resolve, analyze, benchmark)        | `resolve`             |
+| `fail-on-vulnerabilities` | Fail if vulnerabilities found                       | `false`               |
+| `vulnerability-threshold` | Minimum severity to fail                            | `high`                |
+| `fail-on-outdated`        | Fail if too many outdated packages                  | `false`               |
+| `outdated-threshold`      | Max outdated packages before failing                | `10`                  |
+| `cache`                   | Enable caching                                      | `true`                |
+| `token`                   | GitHub token for PR comments                        | `${{ github.token }}` |
+| `working-directory`       | Working directory                                   | `.`                   |
+| `config-path`             | Path to QADR config file                            | Auto-detected         |
+| `verbose`                 | Enable verbose logging                              | `false`               |
+
+## Outputs
+
+| Output                | Description                           |
+| --------------------- | ------------------------------------- |
+| `resolution-time`     | Time taken for resolution (ms)        |
+| `total-dependencies`  | Total resolved dependencies           |
+| `vulnerabilities`     | JSON array of vulnerabilities         |
+| `vulnerability-count` | Number of vulnerabilities             |
+| `outdated-count`      | Number of outdated packages           |
+| `conflicts`           | JSON array of conflicts               |
+| `conflict-count`      | Number of conflicts                   |
+| `speedup`             | Performance improvement over baseline |
+| `cache-hit`           | Whether cache was used                |
+
+## PR Comments
+
+When run on a pull request, QADR automatically posts a comment with:
+
+- Resolution summary
+- Vulnerability report with severity badges
+- Outdated package list
+- Benchmark results (if mode=benchmark)
+
+The comment is updated on subsequent runs to avoid clutter.
+
+## Caching
+
+Caching is enabled by default and uses the manifest file hash as the cache key.
+This means:
+
+- Same dependencies = cache hit = fast resolution
+- Changed dependencies = cache miss = fresh resolution
+
+Disable caching with `cache: false` if needed.
+
+## Supported Ecosystems
+
+| Ecosystem | Manifest                         | Lockfile          |
+| --------- | -------------------------------- | ----------------- |
+| npm       | package.json                     | package-lock.json |
+| yarn      | package.json                     | yarn.lock         |
+| pnpm      | package.json                     | pnpm-lock.yaml    |
+| cargo     | Cargo.toml                       | Cargo.lock        |
+| pip       | requirements.txt, pyproject.toml | requirements.txt  |
+| go        | go.mod                           | go.sum            |
+
+## Example Workflows
+
+### CI/CD Pipeline
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR Resolution
+        id: qadr
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: resolve
+          fail-on-vulnerabilities: true
+
+      - name: Check Results
+        run: |
+          echo "Resolved ${{ steps.qadr.outputs.total-dependencies }} packages"
+          echo "Found ${{ steps.qadr.outputs.vulnerability-count }} vulnerabilities"
+```
+
+### Scheduled Security Scan
+
+```yaml
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR Security Analysis
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: analyze
+          fail-on-vulnerabilities: true
+          vulnerability-threshold: medium
+```
+
+### Performance Monitoring
+
+```yaml
+name: Performance
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR Benchmark
+        id: benchmark
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: benchmark
+
+      - name: Report
+        run: |
+          echo "QADR is ${{ steps.benchmark.outputs.speedup }}x faster!"
+```
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build
+pnpm build
+
+# Test
+pnpm test
+
+# Lint
+pnpm lint
+```
+
+## License
+
+MIT © QADR Contributors

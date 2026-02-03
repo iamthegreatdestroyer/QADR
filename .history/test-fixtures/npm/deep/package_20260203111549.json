@@ -1,0 +1,8 @@
+{
+  "name": "deep-fixture",
+  "version": "1.0.0",
+  "description": "Deep transitive dependency chain - tests performance",
+  "dependencies": {
+    "level-0": "^1.0.0"
+  }
+}

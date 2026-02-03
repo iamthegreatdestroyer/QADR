@@ -1,0 +1,211 @@
+# GitHub Action
+
+The QADR GitHub Action integrates dependency resolution into your CI/CD
+workflows.
+
+## Quick Start
+
+```yaml
+name: Dependencies
+
+on: [push, pull_request]
+
+jobs:
+  qadr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: resolve
+```
+
+## Inputs
+
+| Input                     | Description                                            | Default               |
+| ------------------------- | ------------------------------------------------------ | --------------------- |
+| `manifest-path`           | Path to package.json                                   | `package.json`        |
+| `lock-path`               | Path to lockfile                                       | Auto-detected         |
+| `ecosystem`               | Package manager (npm, yarn, pnpm, cargo, pip, go)      | `npm`                 |
+| `mode`                    | Operation mode (resolve, analyze, benchmark)           | `resolve`             |
+| `fail-on-vulnerabilities` | Fail if vulnerabilities found                          | `false`               |
+| `vulnerability-threshold` | Minimum severity to fail (critical, high, medium, low) | `high`                |
+| `fail-on-outdated`        | Fail if too many outdated packages                     | `false`               |
+| `outdated-threshold`      | Max outdated packages before failing                   | `10`                  |
+| `cache`                   | Enable caching                                         | `true`                |
+| `token`                   | GitHub token for PR comments                           | `${{ github.token }}` |
+| `working-directory`       | Working directory                                      | `.`                   |
+| `verbose`                 | Enable verbose logging                                 | `false`               |
+
+## Outputs
+
+| Output                | Description                           |
+| --------------------- | ------------------------------------- |
+| `resolution-time`     | Time taken for resolution (ms)        |
+| `total-dependencies`  | Total resolved dependencies           |
+| `vulnerabilities`     | JSON array of vulnerabilities         |
+| `vulnerability-count` | Number of vulnerabilities             |
+| `outdated-count`      | Number of outdated packages           |
+| `conflicts`           | JSON array of conflicts               |
+| `conflict-count`      | Number of conflicts                   |
+| `speedup`             | Performance improvement over baseline |
+| `cache-hit`           | Whether cache was used                |
+
+## Examples
+
+### Basic Resolution
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    mode: resolve
+```
+
+### Security Check
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  with:
+    mode: analyze
+    fail-on-vulnerabilities: true
+    vulnerability-threshold: high
+```
+
+### Performance Benchmark
+
+```yaml
+- uses: iamthegreatdestroyer/QADR@v1
+  id: benchmark
+  with:
+    mode: benchmark
+
+- name: Report
+  run: echo "QADR is ${{ steps.benchmark.outputs.speedup }}x faster!"
+```
+
+### Monorepo
+
+```yaml
+strategy:
+  matrix:
+    package: [app, lib, shared]
+
+steps:
+  - uses: actions/checkout@v4
+
+  - uses: iamthegreatdestroyer/QADR@v1
+    with:
+      manifest-path: packages/${{ matrix.package }}/package.json
+```
+
+### Full Example
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QADR Resolution
+        id: qadr
+        uses: iamthegreatdestroyer/QADR@v1
+        with:
+          mode: resolve
+          fail-on-vulnerabilities: true
+          vulnerability-threshold: high
+          cache: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## QADR Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Packages: ${{ steps.qadr.outputs.total-dependencies }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Time: ${{ steps.qadr.outputs.resolution-time }}ms" >> $GITHUB_STEP_SUMMARY
+          echo "- Vulnerabilities: ${{ steps.qadr.outputs.vulnerability-count }}" >> $GITHUB_STEP_SUMMARY
+```
+
+## PR Comments
+
+When run on a pull request, QADR automatically posts a comment with results:
+
+```
+## 🔮 QADR Dependency Analysis
+
+**Resolution:** ✅ Successful in 0.15s
+
+| Metric | Value |
+|--------|-------|
+| Total Packages | 150 |
+| Vulnerabilities | 2 |
+| Outdated | 5 |
+
+### 🛡️ Vulnerabilities
+
+| Package | Severity | Advisory |
+|---------|----------|----------|
+| lodash | High | GHSA-xxxx |
+| axios | Medium | GHSA-yyyy |
+```
+
+Comments are updated on subsequent runs to avoid clutter.
+
+## Caching
+
+Caching is enabled by default:
+
+- **Cache key**: SHA256 of manifest file
+- **Cache path**: `.qadr-cache`
+- **Cache hit**: Skips network requests for known versions
+
+Disable with `cache: false` for fresh resolution every time.
+
+## Supported Ecosystems
+
+| Ecosystem | Manifest         | Lockfile          |
+| --------- | ---------------- | ----------------- |
+| npm       | package.json     | package-lock.json |
+| yarn      | package.json     | yarn.lock         |
+| pnpm      | package.json     | pnpm-lock.yaml    |
+| cargo     | Cargo.toml       | Cargo.lock        |
+| pip       | requirements.txt | requirements.txt  |
+| go        | go.mod           | go.sum            |
+
+## Troubleshooting
+
+### Action Fails with "No manifest found"
+
+Ensure the `manifest-path` input points to a valid file:
+
+```yaml
+with:
+  manifest-path: ./packages/app/package.json
+```
+
+### PR Comments Not Appearing
+
+Ensure the `GITHUB_TOKEN` is passed:
+
+```yaml
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Cache Not Working
+
+Check that caching is enabled and the manifest hasn't changed:
+
+```yaml
+with:
+  cache: true
+```

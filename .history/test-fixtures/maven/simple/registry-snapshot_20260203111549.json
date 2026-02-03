@@ -1,0 +1,72 @@
+{
+  "packages": {
+    "org.springframework.boot:spring-boot-starter-web": {
+      "3.2.0": {
+        "name": "org.springframework.boot:spring-boot-starter-web",
+        "version": "3.2.0",
+        "dependencies": {
+          "org.springframework.boot:spring-boot-starter": "3.2.0",
+          "org.springframework.boot:spring-boot-starter-json": "3.2.0",
+          "org.springframework:spring-web": "6.1.0",
+          "org.springframework:spring-webmvc": "6.1.0"
+        }
+      }
+    },
+    "org.springframework.boot:spring-boot-starter": {
+      "3.2.0": {
+        "name": "org.springframework.boot:spring-boot-starter",
+        "version": "3.2.0",
+        "dependencies": {
+          "org.springframework.boot:spring-boot": "3.2.0",
+          "org.springframework:spring-core": "6.1.0"
+        }
+      }
+    },
+    "org.springframework.boot:spring-boot-starter-json": {
+      "3.2.0": {
+        "name": "org.springframework.boot:spring-boot-starter-json",
+        "version": "3.2.0",
+        "dependencies": {
+          "com.fasterxml.jackson.core:jackson-databind": "2.15.3"
+        }
+      }
+    },
+    "org.springframework.boot:spring-boot": {
+      "3.2.0": { "name": "org.springframework.boot:spring-boot", "version": "3.2.0", "dependencies": {} }
+    },
+    "org.springframework:spring-core": {
+      "6.1.0": { "name": "org.springframework:spring-core", "version": "6.1.0", "dependencies": {} }
+    },
+    "org.springframework:spring-web": {
+      "6.1.0": {
+        "name": "org.springframework:spring-web",
+        "version": "6.1.0",
+        "dependencies": { "org.springframework:spring-core": "6.1.0" }
+      }
+    },
+    "org.springframework:spring-webmvc": {
+      "6.1.0": {
+        "name": "org.springframework:spring-webmvc",
+        "version": "6.1.0",
+        "dependencies": { "org.springframework:spring-web": "6.1.0" }
+      }
+    },
+    "com.fasterxml.jackson.core:jackson-databind": {
+      "2.15.3": { "name": "com.fasterxml.jackson.core:jackson-databind", "version": "2.15.3", "dependencies": {} }
+    },
+    "com.google.guava:guava": {
+      "33.0.0-jre": { "name": "com.google.guava:guava", "version": "33.0.0-jre", "dependencies": {} }
+    }
+  },
+  "expected": {
+    "org.springframework.boot:spring-boot-starter-web": "3.2.0",
+    "org.springframework.boot:spring-boot-starter": "3.2.0",
+    "org.springframework.boot:spring-boot-starter-json": "3.2.0",
+    "org.springframework.boot:spring-boot": "3.2.0",
+    "org.springframework:spring-core": "6.1.0",
+    "org.springframework:spring-web": "6.1.0",
+    "org.springframework:spring-webmvc": "6.1.0",
+    "com.fasterxml.jackson.core:jackson-databind": "2.15.3",
+    "com.google.guava:guava": "33.0.0-jre"
+  }
+}

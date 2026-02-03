@@ -1,0 +1,32 @@
+{
+  "packages": {
+    "lodash": {
+      "4.17.21": {
+        "name": "lodash",
+        "version": "4.17.21",
+        "dependencies": {}
+      },
+      "4.17.20": {
+        "name": "lodash",
+        "version": "4.17.20",
+        "dependencies": {}
+      }
+    },
+    "chalk": {
+      "5.3.0": {
+        "name": "chalk",
+        "version": "5.3.0",
+        "dependencies": {}
+      },
+      "5.2.0": {
+        "name": "chalk",
+        "version": "5.2.0",
+        "dependencies": {}
+      }
+    }
+  },
+  "expected": {
+    "lodash": "4.17.21",
+    "chalk": "5.3.0"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "@qadr/core",
+  "version": "0.0.1",
+  "description": "Quantum-Annealed Dependency Resolution - Core QUBO optimization engine",
+  "author": "Stevo <sgbilod@proton.me>",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./qubo": {
+      "import": "./dist/qubo/index.js",
+      "types": "./dist/qubo/index.d.ts"
+    },
+    "./annealing": {
+      "import": "./dist/annealing/index.js",
+      "types": "./dist/annealing/index.d.ts"
+    },
+    "./adapters": {
+      "import": "./dist/adapters/index.js",
+      "types": "./dist/adapters/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@qadr/semver": "workspace:*",
+    "@qadr/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0",
+    "@vitest/coverage-v8": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "dependency-resolution",
+    "qubo",
+    "simulated-annealing",
+    "parallel-tempering",
+    "optimization",
+    "quantum-inspired"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamthegreatdestroyer/QADR.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/iamthegreatdestroyer/QADR/issues"
+  },
+  "homepage": "https://github.com/iamthegreatdestroyer/QADR/tree/main/packages/core"
+}

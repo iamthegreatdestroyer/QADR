@@ -1,0 +1,47 @@
+{
+  "packages": {
+    "level-0": {
+      "1.0.0": { "name": "level-0", "version": "1.0.0", "dependencies": { "level-1": "^1.0.0" } }
+    },
+    "level-1": {
+      "1.0.0": { "name": "level-1", "version": "1.0.0", "dependencies": { "level-2": "^1.0.0" } }
+    },
+    "level-2": {
+      "1.0.0": { "name": "level-2", "version": "1.0.0", "dependencies": { "level-3": "^1.0.0" } }
+    },
+    "level-3": {
+      "1.0.0": { "name": "level-3", "version": "1.0.0", "dependencies": { "level-4": "^1.0.0" } }
+    },
+    "level-4": {
+      "1.0.0": { "name": "level-4", "version": "1.0.0", "dependencies": { "level-5": "^1.0.0" } }
+    },
+    "level-5": {
+      "1.0.0": { "name": "level-5", "version": "1.0.0", "dependencies": { "level-6": "^1.0.0" } }
+    },
+    "level-6": {
+      "1.0.0": { "name": "level-6", "version": "1.0.0", "dependencies": { "level-7": "^1.0.0" } }
+    },
+    "level-7": {
+      "1.0.0": { "name": "level-7", "version": "1.0.0", "dependencies": { "level-8": "^1.0.0" } }
+    },
+    "level-8": {
+      "1.0.0": { "name": "level-8", "version": "1.0.0", "dependencies": { "level-9": "^1.0.0" } }
+    },
+    "level-9": {
+      "1.0.0": { "name": "level-9", "version": "1.0.0", "dependencies": {} }
+    }
+  },
+  "expected": {
+    "level-0": "1.0.0",
+    "level-1": "1.0.0",
+    "level-2": "1.0.0",
+    "level-3": "1.0.0",
+    "level-4": "1.0.0",
+    "level-5": "1.0.0",
+    "level-6": "1.0.0",
+    "level-7": "1.0.0",
+    "level-8": "1.0.0",
+    "level-9": "1.0.0"
+  },
+  "depth": 10
+}

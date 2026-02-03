@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "allowSyntheticDefaultImports": true,
+    "incremental": true,
+    "composite": true,
+    "paths": {
+      "@qadr/core": ["./packages/core/src"],
+      "@qadr/core/*": ["./packages/core/src/*"],
+      "@qadr/semver": ["./packages/semver/src"],
+      "@qadr/semver/*": ["./packages/semver/src/*"],
+      "@qadr/shared": ["./packages/shared/src"],
+      "@qadr/shared/*": ["./packages/shared/src/*"],
+      "@qadr/config": ["./packages/config/src"],
+      "@qadr/config/*": ["./packages/config/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "**/dist/**", "**/coverage/**", "**/.turbo/**"]
+}

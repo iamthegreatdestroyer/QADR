@@ -1,0 +1,6 @@
+# simple-fixture
+
+A simple pip requirements file for testing.
+
+requests>=2.28.0
+flask>=2.0.0

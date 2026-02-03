@@ -1,0 +1,75 @@
+{
+  "name": "@qadr/cli",
+  "version": "0.0.1",
+  "description": "Command-line interface for QADR quantum-annealed dependency resolution",
+  "keywords": [
+    "qadr",
+    "dependency",
+    "resolution",
+    "quantum",
+    "annealing",
+    "cli"
+  ],
+  "author": "Stevo <sgbilod@proton.me>",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamthegreatdestroyer/QADR.git",
+    "directory": "apps/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/iamthegreatdestroyer/QADR/issues"
+  },
+  "homepage": "https://github.com/iamthegreatdestroyer/QADR/tree/main/apps/cli#readme",
+  "type": "module",
+  "bin": {
+    "qadr": "./dist/bin/qadr.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist coverage .turbo",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "qadr": "tsx src/bin/qadr.ts"
+  },
+  "dependencies": {
+    "@qadr/config": "workspace:*",
+    "@qadr/core": "workspace:*",
+    "@qadr/semver": "workspace:*",
+    "@qadr/shared": "workspace:*",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.3",
+    "commander": "^12.0.0",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/prompts": "^2.4.9",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

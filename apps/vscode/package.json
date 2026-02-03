@@ -1,0 +1,212 @@
+{
+  "name": "@qadr/vscode",
+  "displayName": "QADR - Quantum-Annealed Dependency Resolution",
+  "description": "VS Code extension for QADR dependency resolution with real-time analysis",
+  "version": "0.0.1",
+  "license": "AGPL-3.0-or-later",
+  "publisher": "qadr",
+  "author": {
+    "name": "Stevo",
+    "email": "sgbilod@proton.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamthegreatdestroyer/QADR.git",
+    "directory": "apps/vscode"
+  },
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18.0.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "dependencies",
+    "package-manager",
+    "npm",
+    "security",
+    "vulnerabilities",
+    "licenses",
+    "quantum-annealing"
+  ],
+  "activationEvents": [
+    "workspaceContains:package.json",
+    "workspaceContains:Cargo.toml",
+    "workspaceContains:requirements.txt",
+    "workspaceContains:pyproject.toml",
+    "workspaceContains:go.mod",
+    "workspaceContains:pom.xml"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "qadr.resolve",
+        "title": "QADR: Resolve Dependencies",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "qadr.analyze",
+        "title": "QADR: Analyze Dependencies"
+      },
+      {
+        "command": "qadr.showReport",
+        "title": "QADR: Show Dependency Report"
+      },
+      {
+        "command": "qadr.updatePackage",
+        "title": "QADR: Update Package"
+      },
+      {
+        "command": "qadr.fixVulnerability",
+        "title": "QADR: Fix Vulnerability"
+      },
+      {
+        "command": "qadr.openSettings",
+        "title": "QADR: Open Settings"
+      },
+      {
+        "command": "qadr.showDependencyTree",
+        "title": "QADR: Show Dependency Tree"
+      },
+      {
+        "command": "qadr.benchmark",
+        "title": "QADR: Run Benchmark"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "qadrDependencies",
+          "name": "QADR Dependencies",
+          "when": "qadr.hasManifest"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "qadr",
+          "title": "QADR",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "QADR",
+      "properties": {
+        "qadr.autoAnalyze": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically analyze dependencies when manifest changes"
+        },
+        "qadr.showInlineHints": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inline hints for version updates"
+        },
+        "qadr.securityLevel": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "default": "high",
+          "description": "Minimum vulnerability severity to report"
+        },
+        "qadr.showVulnerabilities": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show vulnerability warnings in diagnostics"
+        },
+        "qadr.showLicenseWarnings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show license compatibility warnings"
+        },
+        "qadr.strategy": {
+          "type": "string",
+          "enum": [
+            "newest",
+            "oldest",
+            "minimal",
+            "balanced",
+            "security"
+          ],
+          "default": "balanced",
+          "description": "Default resolution strategy"
+        },
+        "qadr.cacheEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable caching for registry requests"
+        },
+        "qadr.cacheTtl": {
+          "type": "number",
+          "default": 86400,
+          "description": "Cache TTL in seconds"
+        }
+      }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "qadr.updatePackage",
+          "when": "resourceFilename == 'package.json' && editorHasSelection",
+          "group": "qadr"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "qadr.resolve",
+          "when": "view == qadrDependencies",
+          "group": "navigation"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "qadr-lockfile",
+        "filenames": [
+          "qadr.lock",
+          "qadr-lock.json"
+        ],
+        "aliases": [
+          "QADR Lockfile"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "dependencies": {
+    "@qadr/config": "workspace:*",
+    "@qadr/core": "workspace:*",
+    "@qadr/semver": "workspace:*",
+    "@qadr/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.22.0",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

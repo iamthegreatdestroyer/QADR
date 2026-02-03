@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@qadr/core": ["../../../packages/core/src"],
+      "@qadr/semver": ["../../../packages/semver/src"],
+      "@qadr/shared": ["../../../packages/shared/src"],
+      "@qadr/config": ["../../../packages/config/src"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../../packages/core" },
+    { "path": "../../packages/semver" },
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/config" }
+  ]
+}

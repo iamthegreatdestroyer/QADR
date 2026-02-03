@@ -1,0 +1,49 @@
+# VS Code Extension Publishing Ignore File
+
+# Source files (compiled to dist/)
+src/
+
+# Test files
+**/*.test.ts
+**/__tests__/
+
+# Config files
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.eslintrc.*
+.prettierrc*
+
+# Development files
+.vscode/
+*.map
+*.tsbuildinfo
+
+# Build artifacts not needed
+node_modules/
+!node_modules/@qadr/
+
+# Documentation
+docs/
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Git
+.git/
+.gitignore
+
+# Package manager
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# CI/CD
+.github/
+
+# Coverage
+coverage/
+
+# Other
+*.log
+.DS_Store
+Thumbs.db

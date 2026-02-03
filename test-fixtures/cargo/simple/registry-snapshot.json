@@ -1,0 +1,67 @@
+{
+  "packages": {
+    "serde": {
+      "1.0.196": {
+        "name": "serde",
+        "version": "1.0.196",
+        "dependencies": {
+          "serde_derive": "=1.0.196"
+        }
+      }
+    },
+    "serde_derive": {
+      "1.0.196": {
+        "name": "serde_derive",
+        "version": "1.0.196",
+        "dependencies": {
+          "proc-macro2": "^1.0",
+          "quote": "^1.0",
+          "syn": "^2.0"
+        }
+      }
+    },
+    "tokio": {
+      "1.36.0": {
+        "name": "tokio",
+        "version": "1.36.0",
+        "dependencies": {
+          "pin-project-lite": "^0.2",
+          "bytes": "^1.0"
+        }
+      }
+    },
+    "proc-macro2": {
+      "1.0.78": { "name": "proc-macro2", "version": "1.0.78", "dependencies": { "unicode-ident": "^1.0" } }
+    },
+    "quote": {
+      "1.0.35": { "name": "quote", "version": "1.0.35", "dependencies": { "proc-macro2": "^1.0" } }
+    },
+    "syn": {
+      "2.0.48": {
+        "name": "syn",
+        "version": "2.0.48",
+        "dependencies": { "proc-macro2": "^1.0", "quote": "^1.0", "unicode-ident": "^1.0" }
+      }
+    },
+    "unicode-ident": {
+      "1.0.12": { "name": "unicode-ident", "version": "1.0.12", "dependencies": {} }
+    },
+    "pin-project-lite": {
+      "0.2.13": { "name": "pin-project-lite", "version": "0.2.13", "dependencies": {} }
+    },
+    "bytes": {
+      "1.5.0": { "name": "bytes", "version": "1.5.0", "dependencies": {} }
+    }
+  },
+  "expected": {
+    "serde": "1.0.196",
+    "serde_derive": "1.0.196",
+    "tokio": "1.36.0",
+    "proc-macro2": "1.0.78",
+    "quote": "1.0.35",
+    "syn": "2.0.48",
+    "unicode-ident": "1.0.12",
+    "pin-project-lite": "0.2.13",
+    "bytes": "1.5.0"
+  }
+}

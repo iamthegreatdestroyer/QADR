@@ -1,0 +1,99 @@
+# @qadr/core
+
+> Quantum-Annealed Dependency Resolution - Core QUBO optimization engine
+
+## Overview
+
+The core package contains the fundamental algorithms for QADR:
+
+- **QUBO Builder**: Transforms dependency graphs into Quadratic Unconstrained
+  Binary Optimization problems
+- **Simulated Annealing**: Metropolis-Hastings optimization with adaptive
+  cooling schedules
+- **Parallel Tempering**: Replica exchange for escaping local minima
+- **Ecosystem Adapters**: Parse and resolve dependencies for npm, pip, cargo,
+  maven
+
+## Installation
+
+```bash
+pnpm add @qadr/core
+```
+
+## Quick Start
+
+```typescript
+import { QUBOResolver, createNpmAdapter } from '@qadr/core';
+
+// Create resolver with npm adapter
+const resolver = new QUBOResolver({
+  adapter: createNpmAdapter(),
+  annealing: {
+    initialTemperature: 100,
+    coolingRate: 0.995,
+    minTemperature: 0.01,
+  },
+});
+
+// Resolve dependencies
+const result = await resolver.resolve({
+  dependencies: {
+    lodash: '^4.17.0',
+    express: '^4.18.0',
+  },
+});
+
+console.log(result.resolution);
+```
+
+## Architecture
+
+```
+src/
+├── qubo/                    # QUBO formulation
+│   ├── qubo-builder.ts      # Dependency → QUBO transformation
+│   ├── constraint-encoder.ts # Constraint encoding
+│   └── hamiltonian.ts       # Energy function
+├── annealing/               # Optimization algorithms
+│   ├── simulated-annealing.ts
+│   ├── parallel-tempering.ts
+│   └── cooling-schedules.ts
+├── adapters/                # Ecosystem adapters
+│   ├── npm-adapter.ts
+│   ├── pip-adapter.ts
+│   ├── cargo-adapter.ts
+│   └── maven-adapter.ts
+├── resolver/                # High-level resolver
+│   └── qubo-resolver.ts
+└── index.ts                 # Public API
+```
+
+## The Math
+
+### QUBO Hamiltonian
+
+```
+H(σ) = Σᵢⱼ Jᵢⱼσᵢσⱼ + Σᵢ hᵢσᵢ
+```
+
+Where:
+
+- `σᵢ ∈ {0, 1}` represents whether version `i` is selected
+- `Jᵢⱼ` encodes pairwise conflicts (positive = conflict, negative = preference)
+- `hᵢ` encodes single-variable biases (version freshness, popularity)
+
+### Metropolis Acceptance
+
+```
+P(accept) = min(1, exp(-ΔE / T))
+```
+
+### Parallel Tempering Exchange
+
+```
+P(swap) = min(1, exp((βᵢ - βⱼ)(Eᵢ - Eⱼ)))
+```
+
+## License
+
+AGPL-3.0-or-later

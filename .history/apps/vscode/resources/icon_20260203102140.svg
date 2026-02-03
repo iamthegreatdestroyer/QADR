@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="qadr-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#qadr-gradient)" />
+  
+  <!-- Quantum atom representation -->
+  <g transform="translate(64, 64)" filter="url(#glow)">
+    <!-- Orbital rings -->
+    <ellipse cx="0" cy="0" rx="35" ry="12" fill="none" stroke="white" stroke-width="2" opacity="0.6" />
+    <ellipse cx="0" cy="0" rx="35" ry="12" fill="none" stroke="white" stroke-width="2" opacity="0.6" transform="rotate(60)" />
+    <ellipse cx="0" cy="0" rx="35" ry="12" fill="none" stroke="white" stroke-width="2" opacity="0.6" transform="rotate(-60)" />
+    
+    <!-- Nucleus -->
+    <circle cx="0" cy="0" r="12" fill="white" />
+    
+    <!-- Electrons -->
+    <circle cx="35" cy="0" r="5" fill="white" />
+    <circle cx="-17.5" cy="30.3" r="5" fill="white" />
+    <circle cx="-17.5" cy="-30.3" r="5" fill="white" />
+  </g>
+  
+  <!-- Q letter overlay -->
+  <text x="64" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="rgba(99, 102, 241, 0.3)" text-anchor="middle">Q</text>
+</svg>

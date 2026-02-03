@@ -1,0 +1,50 @@
+{
+  "packages": {
+    "pkg-a": {
+      "1.0.0": {
+        "name": "pkg-a",
+        "version": "1.0.0",
+        "dependencies": {
+          "shared": "^1.0.0"
+        }
+      }
+    },
+    "pkg-b": {
+      "1.0.0": {
+        "name": "pkg-b",
+        "version": "1.0.0",
+        "dependencies": {
+          "shared": "^2.0.0"
+        }
+      }
+    },
+    "shared": {
+      "1.0.0": {
+        "name": "shared",
+        "version": "1.0.0",
+        "dependencies": {}
+      },
+      "1.5.0": {
+        "name": "shared",
+        "version": "1.5.0",
+        "dependencies": {}
+      },
+      "2.0.0": {
+        "name": "shared",
+        "version": "2.0.0",
+        "dependencies": {}
+      },
+      "2.1.0": {
+        "name": "shared",
+        "version": "2.1.0",
+        "dependencies": {}
+      }
+    }
+  },
+  "expected": {
+    "pkg-a": "1.0.0",
+    "pkg-b": "1.0.0",
+    "shared": "2.1.0"
+  },
+  "notes": "This is a classic diamond dependency. pkg-a wants shared@^1.0.0, pkg-b wants shared@^2.0.0. Standard resolvers may fail or pick suboptimal versions. QADR should find shared@2.1.0 as it satisfies ^2.0.0 and is the latest."
+}

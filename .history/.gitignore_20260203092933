@@ -1,0 +1,111 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+out/
+build/
+.next/
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test
+.nyc_output/
+*.lcov
+
+# Benchmark
+benchmark-results/
+.benchmark-cache/
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+*.cache
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.temp
+
+# VS Code Extension
+*.vsix
+apps/vscode/out/
+
+# Rust / Native modules
+packages/annealing-native/target/
+packages/annealing-native/*.node
+*.dylib
+*.so
+*.dll
+
+# Registry data cache
+.registry-cache/
+
+# Changesets
+.changeset/*.md
+!.changeset/config.json
+!.changeset/README.md
+
+# Secrets (never commit)
+*.pem
+*.key
+*.crt
+.secrets/
+
+# Local development
+.local/
+local-*
+
+# Profiling
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+isolate-*-v8.log
+
+# Documentation build
+docs/.docusaurus/
+docs/build/
+
+# Test fixtures (generated)
+test-fixtures/generated/
