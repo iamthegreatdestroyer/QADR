@@ -42,11 +42,11 @@
   },
   "devDependencies": {
     "@qadr/config": "workspace:*",
-    "@types/node": "^20.10.0",
+    "@types/node": "^25.5.0",
     "eslint": "^8.56.0",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.0",
-    "typescript": "^5.3.0",
+    "typescript": "^6.0.2",
     "vitest": "^1.2.0"
   },
   "engines": {
