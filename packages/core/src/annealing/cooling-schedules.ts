@@ -28,7 +28,7 @@ export function exponentialCooling(alpha = 0.995): ICoolingSchedule {
  * Can be too aggressive at low temperatures.
  */
 export function linearCooling(): ICoolingSchedule {
-  return (currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
+  return (_currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
     const { initialTemperature, finalTemperature, maxIterations } = config;
     const progress = iteration / maxIterations;
     return initialTemperature - progress * (initialTemperature - finalTemperature);
@@ -45,7 +45,7 @@ export function linearCooling(): ICoolingSchedule {
  * @param d - Offset to avoid log(0) (default: 2)
  */
 export function logarithmicCooling(c?: number, d = 2): ICoolingSchedule {
-  return (currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
+  return (_currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
     const scale = c ?? config.initialTemperature * Math.log(2);
     return scale / Math.log(iteration + d);
   };
@@ -60,23 +60,11 @@ export function logarithmicCooling(c?: number, d = 2): ICoolingSchedule {
  * @param targetAcceptance - Target acceptance rate (default: 0.3)
  * @param sensitivity - How strongly to react to deviation (default: 0.1)
  */
-export function adaptiveCooling(targetAcceptance = 0.3, sensitivity = 0.1): ICoolingSchedule {
-  let recentAccepted = 0;
-  let recentTotal = 0;
-  const windowSize = 100;
-
-  return (currentTemp: number, iteration: number): number => {
-    // Track acceptance rate in sliding window
-    // (In practice, this would receive accept/reject feedback)
-    // For now, use a simple exponential decay toward target
-
+export function adaptiveCooling(_targetAcceptance = 0.3, _sensitivity = 0.1): ICoolingSchedule {
+  return (currentTemp: number): number => {
     const baseAlpha = 0.995;
-
-    // Simulated adaptive behavior based on temperature
-    // High temp -> faster cooling, low temp -> slower cooling
     const tempFactor = Math.min(1, currentTemp / 10);
     const adaptedAlpha = baseAlpha + (1 - baseAlpha) * tempFactor * 0.5;
-
     return currentTemp * adaptedAlpha;
   };
 }
@@ -106,7 +94,7 @@ export function stepCooling(stepsPerLevel = 1000, dropFactor = 0.8): ICoolingSch
  * Good theoretical properties for continuous optimization.
  */
 export function cauchyCooling(): ICoolingSchedule {
-  return (currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
+  return (_currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
     return config.initialTemperature / (1 + iteration);
   };
 }
@@ -118,7 +106,7 @@ export function cauchyCooling(): ICoolingSchedule {
  * Theoretically motivated by thermodynamics.
  */
 export function boltzmannCooling(): ICoolingSchedule {
-  return (currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
+  return (_currentTemp: number, iteration: number, config: IAnnealingConfig): number => {
     return config.initialTemperature / Math.log(2 + iteration);
   };
 }

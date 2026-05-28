@@ -103,6 +103,22 @@ export interface IDependencyNode {
 }
 
 /**
+ * Dependency graph: all packages and their version/dependency information.
+ */
+export interface IDependencyGraph {
+  /** All packages in the graph */
+  readonly packages: ReadonlyMap<string, {
+    readonly name: string;
+    readonly versions: readonly string[];
+    readonly dependencies: ReadonlyMap<string, readonly IDependencySpec[]>;
+  }>;
+  /** Root-level packages (direct dependencies of the project) */
+  readonly roots: ReadonlySet<string>;
+  /** Version constraints for root packages */
+  readonly constraints: ReadonlyMap<string, string>;
+}
+
+/**
  * Progress callback for long-running operations.
  */
 export type ProgressCallback = (progress: IProgressInfo) => void;

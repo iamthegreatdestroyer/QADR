@@ -182,7 +182,7 @@ export const DEFAULT_ANNEALING_CONFIG: IAnnealingConfig = {
   initialTemperature: 100,
   finalTemperature: 0.001,
   maxIterations: 100000,
-  coolingSchedule: (temp, _, config) => temp * 0.995, // Exponential by default
+  coolingSchedule: (temp, _iter, _cfg) => temp * 0.995,
   iterationsPerTemperature: 100,
   enableRestarts: true,
   restartThreshold: 5000,

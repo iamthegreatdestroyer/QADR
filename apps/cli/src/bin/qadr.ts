@@ -12,11 +12,12 @@ import { Command } from 'commander';
 import { createRequire } from 'node:module';
 import {
   registerResolveCommand,
+  registerAuditCommand,
   registerAnalyzeCommand,
   registerBenchmarkCommand,
   registerConfigCommand,
 } from '../commands/index.js';
-import { handleError, disableColors } from '../utils/index.js';
+import { disableColors } from '../utils/index.js';
 
 // Load package.json for version
 const require = createRequire(import.meta.url);
@@ -55,18 +56,19 @@ function createProgram(): Command {
       const options = thisCommand.opts();
       
       // Handle color setting
-      if (options.noColor || process.env.NO_COLOR) {
+      if (options['noColor'] || process.env['NO_COLOR']) {
         disableColors();
       }
 
       // Handle debug mode
-      if (options.debug) {
-        process.env.DEBUG = 'qadr:*';
+      if (options['debug']) {
+        process.env['DEBUG'] = 'qadr:*';
       }
     });
 
   // Register all commands
   registerResolveCommand(program);
+  registerAuditCommand(program);
   registerAnalyzeCommand(program);
   registerBenchmarkCommand(program);
   registerConfigCommand(program);
@@ -122,10 +124,15 @@ async function runDoctor(): Promise<void> {
   console.log(section('Configuration'));
   try {
     const { loadConfig } = await import('@qadr/config');
-    const config = await loadConfig();
-    
-    if (config.sources.file) {
-      console.log(`  ${success('')} Configuration file: ${config.sources.file}`);
+    const result = await loadConfig();
+
+    if (result.ok) {
+      const configFile = result.value.sources.find((s) => s.found && !s.inherited);
+      if (configFile) {
+        console.log(`  ${success('')} Configuration file: ${configFile.path}`);
+      } else {
+        console.log(`  ${info('')} Using default configuration`);
+      }
     } else {
       console.log(`  ${info('')} Using default configuration`);
     }
@@ -156,7 +163,7 @@ async function main(): Promise<void> {
   try {
     await program.parseAsync(process.argv);
   } catch (err) {
-    handleError(err, console);
+    console.error(err instanceof Error ? err.message : String(err));
     process.exit(1);
   }
 }

@@ -122,7 +122,7 @@ export function coerce(version: string): ISemVer | null {
   const match = extractRegex.exec(version);
 
   if (match) {
-    const [matched, major, minor, patch] = match;
+    const [, major, minor, patch] = match;
     const normalizedVersion = `${major ?? 0}.${minor ?? 0}.${patch ?? 0}`;
     return parse(normalizedVersion, { loose: true });
   }

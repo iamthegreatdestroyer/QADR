@@ -109,7 +109,7 @@ export class NpmAdapter implements IEcosystemAdapter {
         throw new Error(`Failed to fetch ${packageName}: ${response.status}`);
       }
 
-      const doc: INpmRegistryDocument = await response.json();
+      const doc = await response.json() as INpmRegistryDocument;
       const metadata = this.transformRegistryDocument(doc);
 
       // Cache result
@@ -232,10 +232,10 @@ export class NpmAdapter implements IEcosystemAdapter {
 
       packages.push({
         name,
-        version: entry.version,
+        version: entry.version ?? '',
         integrity: entry.integrity ?? '',
         resolved: entry.resolved ?? '',
-        dependencies: entry.dependencies,
+        ...(entry.dependencies && { dependencies: entry.dependencies }),
       });
     }
 
@@ -336,19 +336,19 @@ export class NpmAdapter implements IEcosystemAdapter {
         peerDependencies: this.parseDependencies(vDoc.peerDependencies),
         optionalDependencies: this.parseDependencies(vDoc.optionalDependencies),
         deprecated: vDoc.deprecated !== undefined,
-        publishedAt: doc.time?.[version] ? new Date(doc.time[version]!) : undefined,
-        size: vDoc.dist?.unpackedSize,
-        integrity: vDoc.dist?.integrity,
+        ...(doc.time?.[version] && { publishedAt: new Date(doc.time[version]!) }),
+        ...(vDoc.dist?.unpackedSize !== undefined && { size: vDoc.dist.unpackedSize }),
+        ...(vDoc.dist?.integrity && { integrity: vDoc.dist.integrity }),
       });
     }
 
     return {
       name: doc.name,
       versions,
-      description: doc.description,
-      license: doc.license,
-      homepage: doc.homepage,
-      repository: doc.repository?.url,
+      ...(doc.description && { description: doc.description }),
+      ...(doc.license && { license: doc.license }),
+      ...(doc.homepage && { homepage: doc.homepage }),
+      ...(doc.repository?.url && { repository: doc.repository.url }),
     };
   }
 
@@ -390,9 +390,7 @@ export class NpmAdapter implements IEcosystemAdapter {
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         const response = await fetch(url, {
-          headers: options?.authToken
-            ? { Authorization: `Bearer ${options.authToken}` }
-            : undefined,
+          ...(options?.authToken && { headers: { Authorization: `Bearer ${options.authToken}` } }),
           signal: options?.signal ?? controller.signal,
         });
 

@@ -1,6 +1,6 @@
 {
   "name": "@qadr/semver",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Semantic versioning utilities for QADR - parsing, comparison, and constraint matching",
   "license": "AGPL-3.0-or-later",
   "author": {

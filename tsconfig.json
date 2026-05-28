@@ -21,8 +21,6 @@
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "allowSyntheticDefaultImports": true,
-    "incremental": true,
-    "composite": true,
     "paths": {
       "@qadr/core": ["./packages/core/src"],
       "@qadr/core/*": ["./packages/core/src/*"],

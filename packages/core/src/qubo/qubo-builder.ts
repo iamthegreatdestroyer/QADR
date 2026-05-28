@@ -141,7 +141,7 @@ export class QUBOBuilder {
    * Build one-hot constraints (exactly one version per package).
    */
   private buildOneHotConstraints(
-    input: IQUBOBuilderInput,
+    _input: IQUBOBuilderInput,
     variables: readonly IQUBOVariable[]
   ): IQUBOConstraint[] {
     const constraints: IQUBOConstraint[] = [];
@@ -262,7 +262,7 @@ export class QUBOBuilder {
   private buildMatrix(
     variables: readonly IQUBOVariable[],
     constraints: readonly IQUBOConstraint[],
-    input: IQUBOBuilderInput
+    _input: IQUBOBuilderInput
   ): IQUBOMatrix {
     const linear = new Map<number, number>();
     const quadratic = new Map<string, number>();

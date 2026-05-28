@@ -164,7 +164,7 @@ export class BufferedTransport implements ILogTransport {
   private inner: ILogTransport;
   private maxSize: number;
   private flushInterval: number;
-  private timer?: ReturnType<typeof setInterval>;
+  private timer: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     inner: ILogTransport,

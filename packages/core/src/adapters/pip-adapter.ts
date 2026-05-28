@@ -80,7 +80,7 @@ export class PipAdapter implements IEcosystemAdapter {
         throw new Error(`Failed to fetch ${packageName}: ${response.status}`);
       }
 
-      const doc: IPyPIPackageDocument = await response.json();
+      const doc = await response.json() as IPyPIPackageDocument;
       const metadata = this.transformPyPIDocument(doc);
 
       // Cache result
@@ -270,7 +270,7 @@ ${devDeps}
       versions.push({
         version,
         dependencies,
-        publishedAt: release.upload_time ? new Date(release.upload_time) : undefined,
+        ...(release.upload_time && { publishedAt: new Date(release.upload_time) }),
         size: release.size,
         integrity: `sha256:${release.digests.sha256}`,
       });
@@ -279,10 +279,10 @@ ${devDeps}
     return {
       name: doc.info.name,
       versions,
-      description: doc.info.summary,
-      license: doc.info.license,
-      homepage: doc.info.home_page,
-      repository: doc.info.project_urls?.['Source'],
+      ...(doc.info.summary && { description: doc.info.summary }),
+      ...(doc.info.license && { license: doc.info.license }),
+      ...(doc.info.home_page && { homepage: doc.info.home_page }),
+      ...(doc.info.project_urls?.['Source'] && { repository: doc.info.project_urls['Source'] }),
     };
   }
 
@@ -407,9 +407,7 @@ ${devDeps}
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         const response = await fetch(url, {
-          headers: options?.authToken
-            ? { Authorization: `Bearer ${options.authToken}` }
-            : undefined,
+          ...(options?.authToken && { headers: { Authorization: `Bearer ${options.authToken}` } }),
           signal: options?.signal ?? controller.signal,
         });
 

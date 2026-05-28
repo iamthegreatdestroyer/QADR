@@ -4,7 +4,7 @@
  * Translates between Maven Central format and QADR dependency format.
  */
 
-import type { IDependencySpec, IResolvedPackage } from '../types.js';
+import type { IResolvedPackage } from '../types.js';
 import type {
   IEcosystemAdapter,
   IPackageMetadata,
@@ -83,7 +83,7 @@ export class MavenAdapter implements IEcosystemAdapter {
         throw new Error(`Failed to fetch ${packageName}: ${response.status}`);
       }
 
-      const doc: IMavenSearchResponse = await response.json();
+      const doc = await response.json() as IMavenSearchResponse;
       const metadata = await this.transformMavenDocument(
         doc,
         groupId,
@@ -297,10 +297,8 @@ export class MavenAdapter implements IEcosystemAdapter {
       // Would need to fetch POM for each version to get deps
       versions.push({
         version: artifact.v,
-        dependencies: [], // Would need POM parsing
-        publishedAt: artifact.timestamp
-          ? new Date(artifact.timestamp)
-          : undefined,
+        dependencies: [],
+        ...(artifact.timestamp && { publishedAt: new Date(artifact.timestamp) }),
       });
     }
 
@@ -343,7 +341,7 @@ export class MavenAdapter implements IEcosystemAdapter {
         deps.push({
           name: `${groupIdMatch[1]}:${artifactIdMatch[1]}`,
           constraint: versionMatch?.[1] ?? '*',
-          scope: scopeMatch?.[1],
+          ...(scopeMatch?.[1] && { scope: scopeMatch[1] }),
         });
       }
     }
@@ -369,9 +367,7 @@ export class MavenAdapter implements IEcosystemAdapter {
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         const response = await fetch(url, {
-          headers: options?.authToken
-            ? { Authorization: `Bearer ${options.authToken}` }
-            : undefined,
+          ...(options?.authToken && { headers: { Authorization: `Bearer ${options.authToken}` } }),
           signal: options?.signal ?? controller.signal,
         });
 

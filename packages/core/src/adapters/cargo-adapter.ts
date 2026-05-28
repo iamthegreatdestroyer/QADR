@@ -96,7 +96,7 @@ export class CargoAdapter implements IEcosystemAdapter {
         throw new Error(`Failed to fetch ${packageName}: ${response.status}`);
       }
 
-      const doc: ICrateDocument = await response.json();
+      const doc = await response.json() as ICrateDocument;
       const metadata = await this.transformCrateDocument(
         doc,
         registryUrl,
@@ -311,22 +311,20 @@ version = "${pkg.version}"
       versions.push({
         version: version.num,
         dependencies: deps.filter((d) => d.type === 'normal').map((d) => d.spec),
-        devDependencies: deps
-          .filter((d) => d.type === 'dev')
-          .map((d) => d.spec),
+        devDependencies: deps.filter((d) => d.type === 'dev').map((d) => d.spec),
         publishedAt: new Date(version.created_at),
-        size: version.crate_size,
-        integrity: version.checksum ? `sha256:${version.checksum}` : undefined,
+        ...(version.crate_size !== undefined && { size: version.crate_size }),
+        ...(version.checksum && { integrity: `sha256:${version.checksum}` }),
       });
     }
 
     return {
       name: doc.crate.name,
       versions,
-      description: doc.crate.description,
-      homepage: doc.crate.homepage,
-      repository: doc.crate.repository,
-      license: sortedVersions[0]?.license,
+      ...(doc.crate.description && { description: doc.crate.description }),
+      ...(doc.crate.homepage && { homepage: doc.crate.homepage }),
+      ...(doc.crate.repository && { repository: doc.crate.repository }),
+      ...(sortedVersions[0]?.license && { license: sortedVersions[0].license }),
     };
   }
 
@@ -345,7 +343,7 @@ version = "${pkg.version}"
       const response = await this.fetchWithRetry(url, options);
       if (!response.ok) return [];
 
-      const doc: ICrateDependencies = await response.json();
+      const doc = await response.json() as ICrateDependencies;
 
       return doc.dependencies
         .filter((d) => !d.optional)

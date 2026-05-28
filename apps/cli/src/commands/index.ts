@@ -7,6 +7,7 @@
  */
 
 export { registerResolveCommand } from './resolve.js';
+export { registerAuditCommand } from './audit.js';
 export { registerAnalyzeCommand } from './analyze.js';
 export { registerBenchmarkCommand } from './benchmark.js';
 export { registerConfigCommand } from './config.js';

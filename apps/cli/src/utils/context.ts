@@ -6,7 +6,8 @@
  * @packageDocumentation
  */
 
-import { loadConfig, type LoadedConfig, type QadrConfig } from '@qadr/config';
+import { loadConfig } from '@qadr/config';
+import type { LoadedConfig } from '@qadr/config';
 import { createLogger, type Logger } from '@qadr/shared';
 import type { GlobalOptions, CliContext, CliError } from '../types.js';
 import { disableColors } from './format.js';
@@ -19,48 +20,40 @@ import { disableColors } from './format.js';
  * Create CLI execution context
  */
 export async function createContext(options: GlobalOptions): Promise<CliContext> {
-  // Determine working directory
   const cwd = options.cwd ?? process.cwd();
 
-  // Load configuration
-  const config = await loadConfig({
+  const configResult = await loadConfig({
     cwd,
-    configPath: options.config,
+    ...(options.config && { configPath: options.config }),
   });
 
-  // Create logger
-  const logLevel = options.logLevel ?? config.config.logging?.level ?? 'info';
-  const logger = createLogger({
-    level: logLevel,
-    prefix: 'qadr',
-    colors: !options.noColor,
-  });
+  const { DEFAULT_CONFIG } = await import('@qadr/config');
+  const loadedConfig: LoadedConfig = configResult.ok
+    ? configResult.value
+    : { config: DEFAULT_CONFIG, sources: [], rootDir: cwd, isDefault: true };
 
-  // Disable colors if requested
+  const logger = createLogger('qadr');
+
   if (options.noColor) {
     disableColors();
   }
 
-  // Detect CI environment
   const isCI = Boolean(
-    process.env.CI ||
-    process.env.CONTINUOUS_INTEGRATION ||
-    process.env.GITHUB_ACTIONS ||
-    process.env.GITLAB_CI ||
-    process.env.CIRCLECI ||
-    process.env.TRAVIS,
+    process.env['CI'] ||
+    process.env['CONTINUOUS_INTEGRATION'] ||
+    process.env['GITHUB_ACTIONS'] ||
+    process.env['GITLAB_CI'] ||
+    process.env['CIRCLECI'] ||
+    process.env['TRAVIS'],
   );
 
-  // Detect interactive mode
   const isInteractive = !isCI && process.stdout.isTTY && process.stdin.isTTY;
-
-  // Get terminal width
   const terminalWidth = process.stdout.columns ?? 80;
 
   return {
     cwd,
     options,
-    config,
+    config: loadedConfig,
     logger,
     isCI,
     isInteractive,
@@ -86,8 +79,8 @@ export function createCliError(
   const error = new Error(message) as CliError;
   error.name = 'CliError';
   error.exitCode = exitCode;
-  error.details = options.details;
-  error.suggestions = options.suggestions;
+  if (options.details !== undefined) error.details = options.details;
+  if (options.suggestions !== undefined) error.suggestions = options.suggestions;
   return error;
 }
 
@@ -116,7 +109,7 @@ export function handleError(error: unknown, logger: Logger): never {
   } else if (error instanceof Error) {
     logger.error(`Error: ${error.message}`);
 
-    if (process.env.DEBUG || process.env.QADR_DEBUG) {
+    if (process.env['DEBUG'] || process.env['QADR_DEBUG']) {
       logger.error('');
       logger.error('Stack trace:');
       logger.error(error.stack ?? '');

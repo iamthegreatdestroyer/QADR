@@ -7,7 +7,7 @@
  */
 
 import type { Command } from 'commander';
-import type { AnalyzeOptions, CliContext } from '../types.js';
+import type { AnalyzeOptions } from '../types.js';
 import {
   createContext,
   handleError,

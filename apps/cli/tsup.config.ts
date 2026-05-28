@@ -19,12 +19,4 @@ export default defineConfig({
     '@qadr/semver',
     '@qadr/shared',
   ],
-  banner: {
-    js: '#!/usr/bin/env node',
-  },
-  esbuildOptions(options) {
-    options.banner = {
-      js: '#!/usr/bin/env node\n',
-    };
-  },
 });

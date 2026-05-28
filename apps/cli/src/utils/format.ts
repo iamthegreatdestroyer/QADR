@@ -149,7 +149,7 @@ export function createTable<T extends Record<string, unknown>>(
 ): string {
   const table = new Table({
     head: columns.map(col => chalk.bold(col.header)),
-    colWidths: columns.map(col => col.width),
+    colWidths: columns.map(col => col.width ?? null),
     style: {
       head: ['cyan'],
       border: ['gray'],
@@ -404,6 +404,7 @@ export function formatTree(
 
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
+    if (!child) continue;
     const isLast = i === children.length - 1;
     const childPrefix = isLast ? '└─ ' : '├─ ';
     const childIndent = '  '.repeat(level + 1);

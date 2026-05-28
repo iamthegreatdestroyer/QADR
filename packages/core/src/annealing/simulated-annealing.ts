@@ -213,7 +213,7 @@ export class SimulatedAnnealing {
       iterations: Math.ceil(totalMoves / this.config.iterationsPerTemperature),
       finalTemperature: temperature,
       timeMs,
-      trace: collectTrace ? trace : undefined,
+      ...(collectTrace && { trace }),
       stats,
     };
   }

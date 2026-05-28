@@ -23,10 +23,8 @@ export type {
 // ============================================================================
 export { ConstraintEncoder, Hamiltonian, QUBOBuilder } from './qubo/index.js';
 export type {
-  IQUBOBuilderConfig,
   IQUBOMatrix,
   IQUBOVariable,
-  IVariableMapping,
 } from './qubo/index.js';
 
 // ============================================================================
@@ -39,11 +37,10 @@ export {
   boltzmannCooling,
   cauchyCooling,
   exponentialCooling,
-  geometricCooling,
-  hyperbolicCooling,
+  geometricWithReheat,
   linearCooling,
   logarithmicCooling,
-  reheatCooling,
+  stepCooling,
 } from './annealing/index.js';
 export type {
   IAnnealingConfig,
@@ -53,7 +50,6 @@ export type {
   ICoolingSchedule,
   IParallelTemperingConfig,
   IParallelTemperingResult,
-  IReplica,
 } from './annealing/index.js';
 
 // ============================================================================
@@ -80,4 +76,4 @@ export type {
 // ============================================================================
 // Core Types
 // ============================================================================
-export type { IConflict, IDependencyGraph, IDependencySpec, IResolvedPackage } from './types.js';
+export type { IConflict, IDependencyGraph, IDependencyNode, IDependencySpec, IResolvedPackage } from './types.js';

@@ -334,7 +334,7 @@ export class ParallelTempering {
    */
   public static estimateOptimalSpacing(
     matrix: IQUBOMatrix,
-    targetExchangeRate = 0.25,
+    _targetExchangeRate = 0.25,
     samples = 1000
   ): { minTemp: number; maxTemp: number; numReplicas: number } {
     const hamiltonian = new Hamiltonian(matrix);

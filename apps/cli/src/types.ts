@@ -7,8 +7,9 @@
  * @module @qadr/cli
  */
 
-import type { Ecosystem, ResolutionStrategy, OutputFormat, LogLevel } from '@qadr/config';
-import type { ResolutionResult, DependencyGraph } from '@qadr/core';
+import type { Ecosystem, ResolutionStrategy, OutputFormat } from '@qadr/config';
+import type { LogLevel } from '@qadr/shared';
+import type { IDependencyGraph } from '@qadr/core';
 
 // =============================================================================
 // CLI Option Types
@@ -215,7 +216,7 @@ export interface BenchmarkResult {
  */
 export interface AnalysisResult {
   /** Dependency graph */
-  graph: DependencyGraph;
+  graph: IDependencyGraph;
   /** Vulnerability scan results */
   vulnerabilities?: VulnerabilityReport[];
   /** License analysis results */
@@ -390,7 +391,4 @@ export interface CliError extends Error {
 // Export
 // =============================================================================
 
-export type {
-  ResolutionResult,
-  DependencyGraph,
-} from '@qadr/core';
+export type { IResolverResult, IDependencyGraph } from '@qadr/core';

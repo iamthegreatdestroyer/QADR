@@ -6,15 +6,8 @@
     "declaration": true,
     "declarationDir": "dist",
     "declarationMap": true,
-    "composite": true,
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "references": [
-    { "path": "../../packages/core" },
-    { "path": "../../packages/semver" },
-    { "path": "../../packages/shared" },
-    { "path": "../../packages/config" }
-  ]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

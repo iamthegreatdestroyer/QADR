@@ -15,10 +15,8 @@ import { resolve, dirname, join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import { ok, err, type Result } from '@qadr/shared';
 import {
-  validateConfig,
   safeValidateConfig,
   formatValidationErrors,
-  type ValidatedConfig,
 } from './schema.js';
 import { DEFAULT_CONFIG, PRESETS, applyPreset } from './defaults.js';
 import type {
@@ -55,10 +53,6 @@ export const CONFIG_FILES = [
   '.qadrrc.yml',
 ];
 
-/**
- * Environment variable prefix
- */
-const ENV_PREFIX = 'QADR_';
 
 // =============================================================================
 // LOADER OPTIONS
@@ -177,10 +171,8 @@ function parseEnvVars(): PartialQadrConfig {
       if (!config.registries) {
         config.registries = {};
       }
-      if (!config.registries[registryName]) {
-        config.registries[registryName] = {};
-      }
-      (config.registries[registryName] as Record<string, unknown>).token = value;
+      const existing = config.registries[registryName] as Partial<import('./types.js').RegistryConfig> | undefined;
+      config.registries[registryName] = { ...existing, token: value } as import('./types.js').RegistryConfig;
     }
   }
 
@@ -193,13 +185,16 @@ function parseEnvVars(): PartialQadrConfig {
 function setNestedValue(obj: Record<string, unknown>, path: string[], value: unknown): void {
   let current = obj;
   for (let i = 0; i < path.length - 1; i++) {
-    const key = path[i];
+    const key = path[i]!;
     if (!(key in current) || typeof current[key] !== 'object') {
       current[key] = {};
     }
     current = current[key] as Record<string, unknown>;
   }
-  current[path[path.length - 1]] = value;
+  const lastKey = path[path.length - 1];
+  if (lastKey !== undefined) {
+    current[lastKey] = value;
+  }
 }
 
 // =============================================================================
@@ -312,18 +307,16 @@ async function loadConfigFile(filePath: string): Promise<PartialQadrConfig | nul
 
     case 'yaml':
     case 'yml': {
-      // Dynamic import for yaml parsing
-      const yaml = await import('js-yaml').catch(() => null);
-      if (yaml) {
+      const yaml = await import('js-yaml' as string).catch(() => null) as { load?: (s: string) => unknown } | null;
+      if (yaml?.load) {
         return yaml.load(readFileSync(filePath, 'utf-8')) as PartialQadrConfig;
       }
       throw new Error('YAML configuration files require js-yaml to be installed');
     }
 
     case 'toml': {
-      // Dynamic import for toml parsing
-      const toml = await import('@iarna/toml').catch(() => null);
-      if (toml) {
+      const toml = await import('@iarna/toml' as string).catch(() => null) as { parse?: (s: string) => unknown } | null;
+      if (toml?.parse) {
         return toml.parse(readFileSync(filePath, 'utf-8')) as PartialQadrConfig;
       }
       throw new Error('TOML configuration files require @iarna/toml to be installed');
@@ -387,7 +380,7 @@ export async function loadConfig(
       if (!(preset in PRESETS)) {
         return err(new Error(`Unknown preset: ${preset}`));
       }
-      configsToMerge.push(PRESETS[preset]);
+      configsToMerge.push(PRESETS[preset]!);
     }
 
     // 2. Search for config file
@@ -410,7 +403,7 @@ export async function loadConfig(
       // Search for config file
       const explorer = cosmiconfig(MODULE_NAME, {
         searchPlaces: CONFIG_FILES,
-        stopDir,
+        ...(stopDir !== undefined && { stopDir }),
       });
 
       searchResult = await explorer.search(cwd);
@@ -504,7 +497,7 @@ export function loadConfigSync(options: LoaderOptions = {}): Result<LoadedConfig
       if (!(preset in PRESETS)) {
         return err(new Error(`Unknown preset: ${preset}`));
       }
-      configsToMerge.push(PRESETS[preset]);
+      configsToMerge.push(PRESETS[preset]!);
     }
 
     // Search for JSON config files only (sync)

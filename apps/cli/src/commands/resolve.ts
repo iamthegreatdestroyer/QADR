@@ -1,50 +1,27 @@
 /**
  * @qadr/cli - Resolve Command
  *
- * Main command for resolving dependencies using quantum annealing.
- *
- * @packageDocumentation
+ * Resolves dependencies using quantum-inspired annealing.
  */
 
 import type { Command } from 'commander';
-import type { ResolveOptions, CliContext, ResolutionSummary } from '../types.js';
-import {
-  createContext,
-  handleError,
-  createCliError,
-  detectEcosystem,
-  PhaseSpinner,
-  formatResolutionSummary,
-  success,
-  warning,
-  info,
-} from '../utils/index.js';
+import type { ResolveOptions } from '../types.js';
+import { createContext, handleError } from '../utils/index.js';
 
-/**
- * Register the resolve command
- */
 export function registerResolveCommand(program: Command): void {
   program
     .command('resolve')
     .description('Resolve dependencies using quantum annealing')
-    .option('-e, --ecosystem <type>', 'Target ecosystem (npm, pip, cargo, maven, go)')
-    .option('-s, --strategy <strategy>', 'Resolution strategy (newest, oldest, minimal, balanced, security)')
-    .option('-m, --manifest <path>', 'Path to package manifest file')
-    .option('-l, --lockfile <path>', 'Path to lockfile')
-    .option('-o, --output <path>', 'Output file path')
-    .option('--dry-run', 'Skip writing lockfile')
-    .option('--timeout <seconds>', 'Maximum resolution time in seconds', parseInt)
+    .argument('[manifest]', 'Path to package.json (default: ./package.json)')
+    .option('-e, --ecosystem <type>', 'Target ecosystem (npm, pip, cargo, maven)', 'npm')
+    .option('--dry-run', 'Print resolved versions without writing lockfile')
+    .option('--timeout <seconds>', 'Maximum resolution time in seconds', '60')
     .option('--dev', 'Include dev dependencies')
-    .option('--optional', 'Include optional dependencies')
-    .option('--preset <name>', 'Use preset configuration (fast, quality, security, minimal)')
-    .option('-f, --force', 'Force resolution even if lockfile exists')
-    .option('--parallel', 'Enable parallel processing')
-    .option('--workers <count>', 'Number of parallel workers', parseInt)
-    .action(async (options: ResolveOptions, command: Command) => {
+    .option('--parallel-tempering', 'Use parallel tempering instead of simulated annealing')
+    .action(async (manifest: string | undefined, options: ResolveOptions, command: Command) => {
       const globalOptions = command.optsWithGlobals();
-      
       try {
-        await resolveCommand({ ...globalOptions, ...options });
+        await resolveCommand(manifest ?? 'package.json', { ...globalOptions, ...options });
       } catch (error) {
         const ctx = await createContext(globalOptions);
         handleError(error, ctx.logger);
@@ -52,213 +29,80 @@ export function registerResolveCommand(program: Command): void {
     });
 }
 
-/**
- * Execute the resolve command
- */
-async function resolveCommand(options: ResolveOptions): Promise<void> {
-  const ctx = await createContext(options);
-  const { logger, cwd, config } = ctx;
+async function resolveCommand(manifestPath: string, options: ResolveOptions): Promise<void> {
+  const { readFile } = await import('node:fs/promises');
+  const { resolve } = await import('node:path');
+  const { QUBOResolver } = await import('@qadr/core');
 
-  // Determine ecosystem
-  let ecosystem = options.ecosystem ?? config.config.ecosystem;
-  if (!ecosystem) {
-    ecosystem = await detectEcosystem(cwd) as any;
-    if (!ecosystem) {
-      throw createCliError('Could not detect ecosystem', 1, {
-        suggestions: [
-          'Specify ecosystem with --ecosystem flag',
-          'Ensure you are in a directory with a package manifest',
-        ],
-      });
-    }
-    logger.info(`Detected ecosystem: ${ecosystem}`);
-  }
+  const absPath = resolve(process.cwd(), manifestPath);
 
-  // Phase spinner for progress
-  const phases = [
-    'Loading manifest',
-    'Fetching registry metadata',
-    'Building QUBO matrix',
-    'Running quantum annealing',
-    'Validating solution',
-    'Writing lockfile',
-  ];
-
-  const spinner = new PhaseSpinner(phases);
-  spinner.start();
-
+  let raw: Record<string, unknown>;
   try {
-    // Phase 1: Load manifest
-    spinner.update('Loading package manifest...');
-    const manifest = await loadManifest(cwd, ecosystem, options.manifest);
-    spinner.nextPhase();
-
-    // Phase 2: Fetch registry metadata
-    spinner.update('Fetching package metadata from registry...');
-    const metadata = await fetchMetadata(manifest, ecosystem, config.config);
-    spinner.nextPhase();
-
-    // Phase 3: Build QUBO matrix
-    spinner.update('Building QUBO problem formulation...');
-    const qubo = await buildQubo(manifest, metadata, config.config);
-    spinner.nextPhase();
-
-    // Phase 4: Run quantum annealing
-    spinner.update('Running simulated quantum annealing...');
-    const startTime = Date.now();
-    const solution = await runAnnealing(qubo, config.config);
-    const resolutionTime = Date.now() - startTime;
-    spinner.nextPhase();
-
-    // Phase 5: Validate solution
-    spinner.update('Validating resolution...');
-    const validation = await validateSolution(solution, manifest, metadata);
-    if (!validation.valid) {
-      throw createCliError('Resolution validation failed', 1, {
-        details: validation.errors.join('\n'),
-      });
-    }
-    spinner.nextPhase();
-
-    // Phase 6: Write lockfile
-    if (!options.dryRun) {
-      spinner.update('Writing lockfile...');
-      await writeLockfile(solution, cwd, ecosystem, options.lockfile);
-    }
-
-    spinner.succeed('Resolution complete');
-
-    // Print summary
-    const summary = buildSummary(solution, resolutionTime);
-    console.log(formatResolutionSummary(summary));
-
-    if (options.dryRun) {
-      console.log(warning('Dry run - lockfile not written'));
-    } else {
-      console.log(success(`Lockfile written successfully`));
-    }
-
-    // Write output if requested
-    if (options.output) {
-      const { writeFile } = await import('node:fs/promises');
-      const output = formatOutput(solution, options.format ?? 'json');
-      await writeFile(options.output, output, 'utf-8');
-      console.log(info(`Output written to: ${options.output}`));
-    }
-  } catch (error) {
-    spinner.fail();
-    throw error;
+    raw = JSON.parse(await readFile(absPath, 'utf-8')) as Record<string, unknown>;
+  } catch {
+    console.error(`Error: cannot read ${absPath}`);
+    process.exit(1);
   }
-}
 
-// =============================================================================
-// Helper Functions (Stubs for now)
-// =============================================================================
+  const deps = raw['dependencies'] as Record<string, string> | undefined ?? {};
+  const devDeps = raw['devDependencies'] as Record<string, string> | undefined ?? {};
 
-async function loadManifest(
-  _cwd: string,
-  _ecosystem: string,
-  _manifestPath?: string,
-): Promise<Record<string, unknown>> {
-  // TODO: Implement manifest loading using @qadr/core adapters
-  return {
-    name: 'example-project',
-    version: '1.0.0',
-    dependencies: {},
-  };
-}
+  const rootDeps = Object.entries(deps).map(([name, constraint]) => ({ name, constraint }));
+  const rootDevDeps = Object.entries(devDeps).map(([name, constraint]) => ({ name, constraint }));
 
-async function fetchMetadata(
-  _manifest: Record<string, unknown>,
-  _ecosystem: string,
-  _config: import('@qadr/config').QadrConfig,
-): Promise<Record<string, unknown>> {
-  // TODO: Implement metadata fetching using @qadr/core adapters
-  return {};
-}
-
-async function buildQubo(
-  _manifest: Record<string, unknown>,
-  _metadata: Record<string, unknown>,
-  _config: import('@qadr/config').QadrConfig,
-): Promise<Record<string, unknown>> {
-  // TODO: Implement QUBO building using @qadr/core
-  return {
-    matrix: [],
-    variables: [],
-  };
-}
-
-async function runAnnealing(
-  _qubo: Record<string, unknown>,
-  _config: import('@qadr/config').QadrConfig,
-): Promise<Record<string, unknown>> {
-  // TODO: Implement annealing using @qadr/core
-  // Simulate some work
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  return {
-    packages: [],
-    energy: 0,
-    iterations: 1000,
-  };
-}
-
-async function validateSolution(
-  _solution: Record<string, unknown>,
-  _manifest: Record<string, unknown>,
-  _metadata: Record<string, unknown>,
-): Promise<{ valid: boolean; errors: string[] }> {
-  // TODO: Implement validation using @qadr/core
-  return { valid: true, errors: [] };
-}
-
-async function writeLockfile(
-  _solution: Record<string, unknown>,
-  _cwd: string,
-  _ecosystem: string,
-  _lockfilePath?: string,
-): Promise<void> {
-  // TODO: Implement lockfile writing using @qadr/core adapters
-}
-
-function buildSummary(
-  _solution: Record<string, unknown>,
-  timeMs: number,
-): ResolutionSummary {
-  // TODO: Build actual summary from solution
-  return {
-    packageCount: 0,
-    directCount: 0,
-    transitiveCount: 0,
-    timeMs,
-    conflictsResolved: 0,
-    vulnerabilities: {
-      critical: 0,
-      high: 0,
-      medium: 0,
-      low: 0,
-      total: 0,
+  const resolver = new QUBOResolver({
+    ecosystem: (options.ecosystem as 'npm' | 'pip' | 'cargo' | 'maven') ?? 'npm',
+    includeDevDeps: options.dev ?? false,
+    maxTimeSeconds: options.timeout ? Number(options.timeout) : 60,
+    useParallelTempering: false,
+    onProgress: (p) => {
+      if (!options['quiet']) {
+        process.stdout.write(`\r  [${p.phase}] ${p.message}`.padEnd(60));
+      }
     },
-    licenses: {
-      licenses: new Map(),
-      unknown: 0,
-      problematic: [],
-    },
-  };
-}
+  });
 
-function formatOutput(
-  solution: Record<string, unknown>,
-  format: string,
-): string {
-  switch (format) {
-    case 'json':
-      return JSON.stringify(solution, null, 2);
-    case 'yaml':
-      // TODO: Add YAML formatting
-      return JSON.stringify(solution, null, 2);
-    default:
-      return JSON.stringify(solution, null, 2);
+  console.log(`\nResolving ${Object.keys(deps).length} direct dependencies from ${manifestPath}...`);
+
+  const result = await resolver.resolve({
+    name: (raw['name'] as string) ?? 'project',
+    dependencies: rootDeps,
+    devDependencies: rootDevDeps,
+  });
+
+  process.stdout.write('\n');
+
+  if (result.error) {
+    console.error(`\nError: ${result.error}`);
+    process.exit(1);
+  }
+
+  const violated = result.violations.length;
+  console.log(`\nResolved ${result.packages.length} packages, ${violated} violations`);
+  console.log('');
+
+  if (result.packages.length > 0) {
+    const maxLen = Math.max(...result.packages.map((p) => `${p.name}@${p.version}`.length));
+    for (const pkg of result.packages) {
+      const label = `${pkg.name}@${pkg.version}`;
+      console.log(`  ${label.padEnd(maxLen)}`);
+    }
+  }
+
+  if (violated > 0) {
+    console.log('\nViolations:');
+    for (const v of result.violations) {
+      console.log(`  [${v.type}] ${v.message}`);
+    }
+  }
+
+  const stats = result.stats;
+  console.log(`\nStats: ${stats.iterations} iterations, energy=${stats.finalEnergy.toFixed(2)}, ${stats.timeMs}ms`);
+
+  if (result.success) {
+    console.log('\n✓ Resolution successful');
+  } else {
+    console.log('\n⚠ Resolution completed with violations');
+    if (!options.dryRun) process.exit(1);
   }
 }
