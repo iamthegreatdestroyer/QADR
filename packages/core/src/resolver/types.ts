@@ -15,7 +15,7 @@ export interface IResolverConfig {
    * Ecosystem to resolve for.
    * @default 'npm'
    */
-  readonly ecosystem?: 'npm' | 'pip' | 'cargo' | 'maven';
+  readonly ecosystem?: 'npm' | 'pip' | 'cargo' | 'maven' | 'hf';
 
   /**
    * Custom registry URL (overrides ecosystem default).

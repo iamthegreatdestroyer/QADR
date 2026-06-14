@@ -1,6 +1,6 @@
 {
   "name": "@qadr/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Quantum-Annealed Dependency Resolution - Core QUBO optimization engine",
   "author": "Stevo <sgbilod@proton.me>",
   "license": "AGPL-3.0-or-later",
@@ -45,6 +45,14 @@
   "dependencies": {
     "@qadr/semver": "workspace:*",
     "@qadr/shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "chromadb": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+    "chromadb": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

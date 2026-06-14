@@ -30,6 +30,7 @@ import {
   PipAdapter,
   CargoAdapter,
   MavenAdapter,
+  HuggingFaceAdapter,
   createMemoryCache,
   type IEcosystemAdapter,
   type IPackageMetadata,
@@ -397,6 +398,7 @@ export class QUBOResolver {
       case 'pip': return new PipAdapter();
       case 'cargo': return new CargoAdapter();
       case 'maven': return new MavenAdapter();
+      case 'hf': return new HuggingFaceAdapter();
       default: throw new Error(`Unknown ecosystem: ${ecosystem}`);
     }
   }

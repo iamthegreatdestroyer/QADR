@@ -57,12 +57,16 @@ export type {
 // ============================================================================
 export {
   CargoAdapter,
+  ChromaCache,
+  HuggingFaceAdapter,
   MavenAdapter,
   NpmAdapter,
   PipAdapter,
+  createChromaCache,
   createMemoryCache,
 } from './adapters/index.js';
 export type {
+  ChromaCacheOptions,
   IAdapterCache,
   IAdapterOptions,
   IEcosystemAdapter,
