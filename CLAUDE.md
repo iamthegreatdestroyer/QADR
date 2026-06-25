@@ -56,7 +56,7 @@ git tag v1.0.0 && git push origin v1.0.0
 ```
 
 ## Done Criteria
-- [ ] `npm build` + `npm test` pass
+- [x] `npm build` + `npm test` pass
 - [ ] Simulated annealer resolves dependency conflicts correctly
 - [ ] CLI: `qadr resolve` and `qadr audit` work
 - [ ] `v1.0.0` tag pushed
