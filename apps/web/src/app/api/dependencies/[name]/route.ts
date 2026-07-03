@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * Get dependency details by name
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { name: string } }
 ) {
   const { name } = params;

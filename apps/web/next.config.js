@@ -7,9 +7,6 @@ const nextConfig = {
     '@qadr/shared',
     '@qadr/config',
   ],
-  experimental: {
-    serverComponentsExternalPackages: ['@qadr/core'],
-  },
   async headers() {
     return [
       {

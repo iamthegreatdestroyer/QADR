@@ -1,15 +1,15 @@
 {
   "name": "conflict-example",
   "version": "1.0.0",
-  "description": "A package.json with a genuine version conflict: pkg-a needs lodash@^3 and pkg-b needs lodash@^4",
+  "description": "A package.json with a genuine version conflict: chalk needs lodash@^3 and pkg-b needs lodash@^4",
   "dependencies": {
     "lodash": "^3.0.0",
-    "pkg-a": "1.0.0",
+    "chalk": "1.0.0",
     "pkg-b": "2.0.0"
   },
   "_conflictNotes": {
     "lodash": "Root requires ^3.0.0, but pkg-b requires ^4.0.0 — incompatible ranges",
-    "pkg-a": "Requires lodash@^3",
+    "chalk": "Requires lodash@^3",
     "pkg-b": "Requires lodash@^4"
   }
 }

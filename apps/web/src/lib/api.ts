@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // API base URL
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE = process.env['NEXT_PUBLIC_API_URL'] || '';
 
 // Request options type
 interface RequestOptions {
@@ -34,8 +34,8 @@ async function request<T>(
         'Content-Type': 'application/json',
         ...headers,
       },
-      body: body ? JSON.stringify(body) : undefined,
-      signal,
+      ...(body ? { body: JSON.stringify(body) } : {}),
+      ...(signal ? { signal } : {}),
     });
 
     const data = await response.json();

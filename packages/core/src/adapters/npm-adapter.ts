@@ -110,7 +110,14 @@ export class NpmAdapter implements IEcosystemAdapter {
       }
 
       const doc = await response.json() as INpmRegistryDocument;
-      const metadata = this.transformRegistryDocument(doc);
+      const metadata = this.transformRegistryDocument(doc, packageName);
+
+      if (!metadata) {
+        // Registry returned a document we can't use (e.g. an unpublished
+        // package with no `versions` map). Degrade gracefully instead of
+        // throwing, consistent with how a 404 is handled above.
+        return undefined;
+      }
 
       // Cache result
       options?.cache?.set(normalizedName, metadata);
@@ -309,8 +316,24 @@ export class NpmAdapter implements IEcosystemAdapter {
 
   /**
    * Transform npm registry document to our format.
+   *
+   * Returns `undefined` (with a warning) instead of throwing when the
+   * registry document is missing or malformed — e.g. an unpublished
+   * package still resolves with HTTP 200 but its body has no `versions`
+   * map (`{ "_id": "...", "time": { "unpublished": {...} } }`), which is
+   * indistinguishable from a 404 until we inspect the body.
    */
-  private transformRegistryDocument(doc: INpmRegistryDocument): IPackageMetadata {
+  private transformRegistryDocument(
+    doc: INpmRegistryDocument | null | undefined,
+    packageName?: string
+  ): IPackageMetadata | undefined {
+    if (!doc || typeof doc !== 'object' || !doc.versions || typeof doc.versions !== 'object') {
+      console.warn(
+        `Skipping ${packageName ?? doc?.name ?? 'unknown package'}: registry document is missing or has no versions (likely unpublished or malformed)`
+      );
+      return undefined;
+    }
+
     const versions: IVersionMetadata[] = [];
 
     // Sort versions newest first

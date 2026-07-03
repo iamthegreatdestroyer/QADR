@@ -37,7 +37,16 @@ export async function POST(request: NextRequest) {
     const outdated = allDeps.filter((d) => d.hasUpdate).length;
 
     // Generate mock vulnerabilities
-    const vulnerabilities = [
+    const vulnerabilities: Array<{
+      id: string;
+      package: string;
+      severity: 'critical' | 'high' | 'medium' | 'low';
+      title: string;
+      description: string;
+      version: string;
+      fixedIn: string;
+      url: string;
+    }> = [
       {
         id: 'GHSA-1234-abcd-5678',
         package: 'lodash',

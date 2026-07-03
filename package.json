@@ -33,7 +33,8 @@
   },
   "packageManager": "pnpm@8.15.0",
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build --filter=!@qadr/docs",
+    "build:docs": "turbo build --filter=@qadr/docs",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
