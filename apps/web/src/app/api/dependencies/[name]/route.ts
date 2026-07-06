@@ -6,9 +6,9 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { name: string } }
+  { params }: { params: Promise<{ name: string }> }
 ) {
-  const { name } = params;
+  const { name } = await params;
   const decodedName = decodeURIComponent(name);
   
   try {
