@@ -110,3 +110,6 @@ docs/build/
 
 # Test fixtures (generated)
 test-fixtures/generated/
+
+# Vitest config timestamp temp files
+*.timestamp-*.mjs
