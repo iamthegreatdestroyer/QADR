@@ -27,10 +27,9 @@ export class QADRContext implements vscode.Disposable {
   private readonly _logger: Logger;
   private readonly _disposables: vscode.Disposable[] = [];
   
-  private _isInitialized = false;
   private _analysisResults: Map<string, AnalysisResult> = new Map();
   private _isAnalyzing = false;
-  private _lastError?: string;
+  private _lastError: string | undefined = undefined;
   private _manifestUris: vscode.Uri[] = [];
 
   /**
@@ -53,7 +52,6 @@ export class QADRContext implements vscode.Disposable {
     // Load cached analysis results
     await this.loadCachedResults();
 
-    this._isInitialized = true;
     this._logger.info('QADR context initialized');
   }
 
@@ -309,7 +307,7 @@ export class QADRContext implements vscode.Disposable {
   async fixVulnerability(
     packageName: string,
     fixedVersion: string,
-    manifestUri: vscode.Uri
+    _manifestUri: vscode.Uri
   ): Promise<void> {
     this._logger.info(`Fixing vulnerability in ${packageName} to ${fixedVersion}`);
     
@@ -323,7 +321,7 @@ export class QADRContext implements vscode.Disposable {
   async updatePackage(
     packageName: string,
     newVersion: string,
-    manifestUri: vscode.Uri
+    _manifestUri: vscode.Uri
   ): Promise<void> {
     this._logger.info(`Updating ${packageName} to ${newVersion}`);
     

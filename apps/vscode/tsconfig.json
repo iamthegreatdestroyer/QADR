@@ -15,11 +15,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "../../packages/core" },
-    { "path": "../../packages/semver" },
-    { "path": "../../packages/shared" },
-    { "path": "../../packages/config" }
-  ]
+  "exclude": ["node_modules", "dist"]
 }

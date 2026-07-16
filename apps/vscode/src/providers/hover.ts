@@ -8,7 +8,7 @@
 
 import * as vscode from 'vscode';
 import type { QADRContext } from '../context';
-import type { DependencyInfo, VulnerabilityInfo } from '../types';
+import type { DependencyInfo } from '../types';
 import { findPackageAtPosition } from '../utils/manifest';
 
 /**

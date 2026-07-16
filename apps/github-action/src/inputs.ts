@@ -49,7 +49,7 @@ export function getInputs(): ActionInputs {
     failOnOutdated: core.getBooleanInput('fail-on-outdated'),
     outdatedThreshold: parseInt(core.getInput('outdated-threshold') || '10', 10),
     cache: core.getBooleanInput('cache'),
-    token: core.getInput('token') || process.env.GITHUB_TOKEN || '',
+    token: core.getInput('token') || process.env['GITHUB_TOKEN'] || '',
     workingDirectory: path.resolve(workingDirectory),
     configPath: core.getInput('config-path')
       ? resolvePath(workingDirectory, core.getInput('config-path'))

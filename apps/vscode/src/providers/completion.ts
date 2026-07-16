@@ -13,12 +13,11 @@ import type { QADRContext } from '../context';
  * Completion provider for package names.
  */
 export class CompletionProvider implements vscode.CompletionItemProvider {
-  private readonly _context: QADRContext;
   private _cache: Map<string, CachedCompletion> = new Map();
   private readonly _cacheTtl = 5 * 60 * 1000; // 5 minutes
 
-  constructor(context: QADRContext) {
-    this._context = context;
+  constructor(_context: QADRContext) {
+    // context reserved for future completion-data lookups
   }
 
   /**
@@ -28,7 +27,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     document: vscode.TextDocument,
     position: vscode.Position,
     _token: vscode.CancellationToken,
-    _context: vscode.CompletionTriggerContext
+    _context: vscode.CompletionContext
   ): Promise<vscode.CompletionItem[] | undefined> {
     // Only work in package.json files
     if (!document.fileName.endsWith('package.json')) {
@@ -48,7 +47,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     const match = textBefore.match(/"([^":]*)$/);
     if (!match) return undefined;
 
-    const query = match[1].toLowerCase();
+    const query = (match[1] ?? '').toLowerCase();
     if (query.length < 2) return undefined;
 
     // Search for packages
@@ -155,7 +154,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       const packages: PackageInfo[] = data.objects.map((obj) => ({
         name: obj.package.name,
         version: obj.package.version,
-        description: obj.package.description,
+        description: obj.package.description ?? '',
         downloads: obj.downloads?.weekly || 0,
       }));
 

@@ -140,7 +140,7 @@ export class DiagnosticsProvider implements vscode.Disposable {
    */
   private createVulnerabilityDiagnostic(
     range: vscode.Range,
-    dep: DependencyInfo,
+    _dep: DependencyInfo,
     vuln: VulnerabilityInfo
   ): vscode.Diagnostic {
     const severity = this.mapSeverity(vuln.severity);

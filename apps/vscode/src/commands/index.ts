@@ -126,7 +126,7 @@ async function resolveDependencies(
       async (progress, token) => {
         progress.report({ increment: 0 });
 
-        const result = await context.resolveDependencies();
+        await context.analyzeWorkspace();
 
         if (token.isCancellationRequested) {
           return;
@@ -134,9 +134,10 @@ async function resolveDependencies(
 
         progress.report({ increment: 100 });
 
+        const result = context.getAnalysisStatus().lastResult;
         if (result) {
           vscode.window.showInformationMessage(
-            `QADR: Resolved ${result.dependencies.length} dependencies in ${result.analysisTime.toFixed(0)}ms`
+            `QADR: Resolved ${result.dependencies.length} dependencies`
           );
         }
 
@@ -217,7 +218,7 @@ function showReport(
     return;
   }
 
-  ReportPanel.createOrShow(extensionContext.extensionUri, results[0]);
+  ReportPanel.createOrShow(extensionContext, qadrContext);
 }
 
 /**

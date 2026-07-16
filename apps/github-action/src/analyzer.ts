@@ -133,7 +133,7 @@ export class Analyzer {
    * In real implementation, this would check npm registry
    */
   private async checkOutdated(
-    dependencies: AnalysisResult['dependencies']
+    _dependencies: AnalysisResult['dependencies']
   ): Promise<AnalysisResult['outdated']> {
     const outdated: AnalysisResult['outdated'] = [];
 

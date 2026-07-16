@@ -15,7 +15,7 @@ import type { ActionResult } from './main';
 export class Reporter {
   private octokit: ReturnType<typeof github.getOctokit> | null = null;
 
-  constructor(private inputs: ActionInputs) {
+  constructor(inputs: ActionInputs) {
     if (inputs.token) {
       this.octokit = github.getOctokit(inputs.token);
     }
@@ -83,11 +83,11 @@ export class Reporter {
       if (result.analysis.outdated.length > 0) {
         lines.push('### 📦 Outdated Packages');
         lines.push('');
-        lines.push('| Package | Current | Latest | Type |');
-        lines.push('| ------- | ------- | ------ | ---- |');
+        lines.push('| Package | Current | Latest |');
+        lines.push('| ------- | ------- | ------ |');
 
         for (const pkg of result.analysis.outdated) {
-          lines.push(`| ${pkg.name} | ${pkg.current} | ${pkg.latest} | ${pkg.type} |`);
+          lines.push(`| ${pkg.name} | ${pkg.current} | ${pkg.latest} |`);
         }
         lines.push('');
       }

@@ -6,7 +6,6 @@
  */
 
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 import { getInputs, type ActionInputs } from './inputs';
 import { Resolver } from './resolver';
 import { Analyzer } from './analyzer';

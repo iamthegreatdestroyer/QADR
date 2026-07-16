@@ -67,6 +67,9 @@ export class CacheManager {
     try {
       // Ensure cache directory exists
       const cacheDir = this.cachePaths[0];
+      if (!cacheDir) {
+        return;
+      }
       await fs.mkdir(cacheDir, { recursive: true });
 
       // Write cache metadata

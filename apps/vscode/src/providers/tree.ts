@@ -11,8 +11,6 @@ import type { QADRContext } from '../context';
 import type {
   DependencyInfo,
   DependencyTreeItem,
-  TreeItemType,
-  VulnerabilityInfo,
 } from '../types';
 
 /**
@@ -25,9 +23,13 @@ export class QADRTreeItem extends vscode.TreeItem {
   ) {
     super(itemData.label, itemData.collapsibleState);
     
-    this.description = itemData.description;
+    if (itemData.description !== undefined) {
+      this.description = itemData.description;
+    }
     this.tooltip = itemData.tooltip;
-    this.contextValue = itemData.contextValue;
+    if (itemData.contextValue !== undefined) {
+      this.contextValue = itemData.contextValue;
+    }
     
     // Set icon
     if (itemData.icon) {
@@ -82,7 +84,7 @@ export class DependencyTreeProvider
   /**
    * Get parent of a tree item.
    */
-  getParent(element: QADRTreeItem): QADRTreeItem | undefined {
+  getParent(_element: QADRTreeItem): QADRTreeItem | undefined {
     // Not implemented - tree is rebuilt on refresh
     return undefined;
   }
@@ -106,6 +108,9 @@ export class DependencyTreeProvider
 
     const items: QADRTreeItem[] = [];
     const result = results[0]; // For now, use first result
+    if (!result) {
+      return items;
+    }
 
     // Vulnerabilities category
     if (result.vulnerabilityCount > 0) {

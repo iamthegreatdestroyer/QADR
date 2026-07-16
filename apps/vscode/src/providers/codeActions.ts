@@ -9,7 +9,7 @@
 import * as vscode from 'vscode';
 import type { QADRContext } from '../context';
 import type { DependencyInfo } from '../types';
-import { findPackageAtPosition, getPackageRange } from '../utils/manifest';
+import { findPackageAtPosition } from '../utils/manifest';
 
 /**
  * Code action provider for dependencies.
@@ -70,7 +70,7 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
    * Create actions for a specific diagnostic.
    */
   private createActionsForDiagnostic(
-    document: vscode.TextDocument,
+    _document: vscode.TextDocument,
     diagnostic: vscode.Diagnostic,
     packageName: string,
     dep?: DependencyInfo
@@ -149,7 +149,7 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
    * Create general actions for a dependency.
    */
   private createGeneralActions(
-    document: vscode.TextDocument,
+    _document: vscode.TextDocument,
     dep: DependencyInfo,
     packageName: string
   ): vscode.CodeAction[] {

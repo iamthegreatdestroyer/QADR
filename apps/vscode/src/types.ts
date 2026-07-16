@@ -102,9 +102,9 @@ export interface AnalysisStatus {
   /** Whether analysis is running */
   readonly isAnalyzing: boolean;
   /** Last analysis result */
-  readonly lastResult?: AnalysisResult;
+  readonly lastResult?: AnalysisResult | undefined;
   /** Error message if analysis failed */
-  readonly error?: string;
+  readonly error?: string | undefined;
 }
 
 /**

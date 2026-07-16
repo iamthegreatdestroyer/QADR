@@ -104,7 +104,7 @@ export async function activate(
     );
 
     // Register commands
-    registerCommands(context, qadrContext, treeProvider, statusBar);
+    registerCommands(context, qadrContext, treeProvider, diagnosticsProvider);
 
     // Watch for manifest changes
     const manifestWatcher = vscode.workspace.createFileSystemWatcher(
