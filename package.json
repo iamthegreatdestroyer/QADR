@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Quantum-Annealed Dependency Resolution - Sub-linear package resolution via QUBO optimization",
-  "author": "Stevo <sgbilod@proton.me>",
+  "author": "Stephen Bilodeau <sgbilod@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
